@@ -21,7 +21,7 @@ class SolarWebEntity(CoordinatorEntity):
     def device_info(self) -> DeviceInfo:
         return DeviceInfo(
             configuration_url=ATTRIBUTION,
-            identifiers={(DOMAIN, self._attr_unique_id)},
-            name=self.entity_description.name,
+            identifiers={(DOMAIN, self.config_entry.data[CONF_PV_ID])},
+            name=self.config_entry.title,
             manufacturer="Fronius",
         )
