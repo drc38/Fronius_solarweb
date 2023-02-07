@@ -58,7 +58,7 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     @property
     def native_precision(self):
         """Return the native measurement precision."""
-        dicts = self.coordinator.data.data.channels
+        dicts = self.coordinator.data.data.channels.dict()
         value = next(
             (item for item in dicts if item["channelName"] == self._attr_name), None
         )
@@ -71,7 +71,7 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     @property
     def state_class(self):
         """Return the state class."""
-        dicts = self.coordinator.data.data.channels
+        dicts = self.coordinator.data.data.channels.dict()
         value = next(
             (item for item in dicts if item["channelName"] == self._attr_name), None
         )
@@ -84,7 +84,7 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     @property
     def device_class(self):
         """Return the device class."""
-        dicts = self.coordinator.data.data.channels
+        dicts = self.coordinator.data.data.channels.dict()
         value = next(
             (item for item in dicts if item["channelName"] == self._attr_name), None
         )
@@ -97,7 +97,7 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     @property
     def icon(self):
         """Return the state class."""
-        dicts = self.coordinator.data.data.channels
+        dicts = self.coordinator.data.data.channels.dict()
         value = next(
             (item for item in dicts if item["channelName"] == self._attr_name), None
         )
