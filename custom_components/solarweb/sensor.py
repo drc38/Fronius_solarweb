@@ -60,9 +60,8 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         value = next(
             (item for item in lst if item.channelName == self._attr_name), None
         )
-        typ = value.channelType
-        if typ:
-            return CHANNEL_HA_MAP.get(typ).get("precision")
+        if value:
+            return CHANNEL_HA_MAP.get(value.channelType).get("precision")
         else:
             return None
 
@@ -73,9 +72,8 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         value = next(
             (item for item in lst if item.channelName == self._attr_name), None
         )
-        typ = value.channelType
-        if typ:
-            return CHANNEL_HA_MAP.get(typ).get("state")
+        if value:
+            return CHANNEL_HA_MAP.get(value.channelType).get("state")
         else:
             return None
 
@@ -86,9 +84,8 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         value = next(
             (item for item in lst if item.channelName == self._attr_name), None
         )
-        typ = value.channelType
-        if typ:
-            return CHANNEL_HA_MAP.get(typ).get("device")
+        if value:
+            return CHANNEL_HA_MAP.get(value.channelType).get("device")
         else:
             return None
 
@@ -99,9 +96,8 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         value = next(
             (item for item in lst if item.channelName == self._attr_name), None
         )
-        typ = value.channelType
-        if typ:
-            return CHANNEL_HA_MAP.get(typ).get("icon")
+        if value:
+            return CHANNEL_HA_MAP.get(value.channelType).get("icon")
         else:
             return None
 
