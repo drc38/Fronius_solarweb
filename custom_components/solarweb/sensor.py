@@ -8,6 +8,7 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor import SensorEntityDescription
 
 from .const import CHANNEL_HA_MAP
+from .const import CONF_PVID
 from .const import DOMAIN
 from .entity import SolarWebEntity
 
@@ -27,8 +28,8 @@ async def async_setup_entry(hass, entry, async_add_devices):
     if coordinator.data.data is not None:
         for sens in coordinator.data.data.channels:
             desc = SolarWebSensorDescription(
-                key=sens.channelName,
-                name=sens.channelName,
+                key=".".join([entry.title, sens.channelName]),
+                name=" ".join([entry.title, sens.channelName])
                 native_unit_of_measurement=sens.unit,
             )
             async_add_devices([SolarWebSensor(coordinator, entry, desc)], False)
@@ -45,8 +46,8 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         super().__init__(coordinator, config_entry, description)
         self._config = config_entry
         self.entity_description = description
-        self._extra_attr = {}
-        self._attr_name = None
+        self._attr_unique_id = ".".join([self._config.data.get(CONF_PV_ID), self.entity_description.key])
+
 
     @property
     def available(self):
