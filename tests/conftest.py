@@ -13,8 +13,10 @@ from .const import PV_SYS_DATA
 
 pytest_plugins = "pytest_homeassistant_custom_component"
 
-sys_data = PvSystemMetaData(**json.dumps(PV_SYS_DATA).encode("utf-8"))
-flow_data = PvSystemFlowData(**json.dumps(PV_FLOW_DATA).encode("utf-8"))
+j_sys = json.dumps(PV_SYS_DATA)
+j_flow = json.dumps(PV_FLOW_DATA)
+sys_data = PvSystemMetaData(**j_sys)
+flow_data = PvSystemFlowData(**j_flow)
 
 
 @pytest.fixture(autouse=True)
