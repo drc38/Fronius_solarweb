@@ -5,8 +5,8 @@ from typing import Any
 import voluptuous as vol
 from fronius_solarweb import Fronius_Solarweb
 from fronius_solarweb.errors import NotAuthorizedException
+from fronius_solarweb.errors import NotFoundException
 from homeassistant import config_entries
-from homeassistant.exceptions import HomeAssistantError
 
 from .const import CONF_ACCESSKEY_ID
 from .const import CONF_ACCESSKEY_VALUE
@@ -35,17 +35,11 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         #     return self.async_abort(reason="single_instance_allowed")
 
         if user_input is not None:
-            try:
-                info = await self._validate_input(user_input)
-            except HomeAssistantError.CannotConnect:
-                self._errors["base"] = "cannot_connect"
-            except HomeAssistantError.InvalidAuth:
-                self._errors["base"] = "invalid_auth"
-            except Exception:  # pylint: disable=broad-except
-                _LOGGER.exception("Unexpected exception")
-                self._errors["base"] = "unknown"
-            else:
+            info = await self._validate_input(user_input)
+            if info:
                 return self.async_create_entry(title=info["title"], data=user_input)
+            else:
+                self._errors["base"] = "auth"
 
             return await self._show_config_form(user_input)
         else:
@@ -65,7 +59,7 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors=self._errors,
         )
 
-    async def _validate_input(data: dict[str, Any]) -> dict[str, Any]:
+    async def _validate_input(self, data: dict[str, Any]) -> dict[str, Any]:
         """Validate the user input allows us to connect.
         Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
         """
@@ -77,10 +71,9 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             system_data = await client.get_pvsystem_meta_data()
             _LOGGER.info("Retrieved PV system data from cloud API")
 
-        except NotAuthorizedException:
-            raise HomeAssistantError.InvalidAuth
-
-        # Return extra info that you want to store in the config entry.
-        return {
-            "title": system_data.peakPower,
-        }
+            # Return extra info that you want to store in the config entry.
+            return {
+                "title": system_data.peakPower,
+            }
+        except (NotFoundException, NotAuthorizedException):
+            return None
