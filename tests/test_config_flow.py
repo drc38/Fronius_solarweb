@@ -7,6 +7,7 @@ from homeassistant import config_entries
 from homeassistant import data_entry_flow
 
 from .const import MOCK_CONFIG
+from .const import PV_SYS_DATA
 
 
 # This fixture bypasses the actual setup of the integration
@@ -47,7 +48,7 @@ async def test_successful_config_flow(hass, bypass_get_data):
     # Check that the config flow is complete and a new entry is created with
     # the input data
     assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
-    # assert result["title"] == MOCK_CONFIG[CONF_HOST]
+    assert result["title"] == PV_SYS_DATA["name"]
     assert result["data"] == MOCK_CONFIG
     assert result["result"]
 
