@@ -11,8 +11,6 @@ from .const import CHANNEL_HA_MAP
 from .const import DOMAIN
 from .entity import SolarWebEntity
 
-# from homeassistant.components.sensor import SensorDeviceClass
-# from homeassistant.components.sensor import SensorStateClass
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -58,11 +56,11 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     @property
     def native_precision(self):
         """Return the native measurement precision."""
-        dicts = self.coordinator.data.data.channels.dict()
+        lst = self.coordinator.data.data.channels
         value = next(
-            (item for item in dicts if item["channelName"] == self._attr_name), None
+            (item for item in lst if item.channelName == self._attr_name), None
         )
-        typ = value.get("channelType")
+        typ = value.channelType
         if typ:
             return CHANNEL_HA_MAP.get(typ).get("precision")
         else:
@@ -71,11 +69,11 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     @property
     def state_class(self):
         """Return the state class."""
-        dicts = self.coordinator.data.data.channels.dict()
+        lst = self.coordinator.data.data.channels
         value = next(
-            (item for item in dicts if item["channelName"] == self._attr_name), None
+            (item for item in lst if item.channelName == self._attr_name), None
         )
-        typ = value.get("channelType")
+        typ = value.channelType
         if typ:
             return CHANNEL_HA_MAP.get(typ).get("state")
         else:
@@ -84,11 +82,11 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     @property
     def device_class(self):
         """Return the device class."""
-        dicts = self.coordinator.data.data.channels.dict()
+        lst = self.coordinator.data.data.channels
         value = next(
-            (item for item in dicts if item["channelName"] == self._attr_name), None
+            (item for item in lst if item.channelName == self._attr_name), None
         )
-        typ = value.get("channelType")
+        typ = value.channelType
         if typ:
             return CHANNEL_HA_MAP.get(typ).get("device")
         else:
@@ -97,19 +95,15 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     @property
     def icon(self):
         """Return the state class."""
-        dicts = self.coordinator.data.data.channels.dict()
+        lst = self.coordinator.data.data.channels
         value = next(
-            (item for item in dicts if item["channelName"] == self._attr_name), None
+            (item for item in lst if item.channelName == self._attr_name), None
         )
-        typ = value.get("channelType")
+        typ = value.channelType
         if typ:
             return CHANNEL_HA_MAP.get(typ).get("icon")
         else:
             return None
-
-    # @property
-    # def icon(self):
-    #    """Return the icon of the sensor."""
 
     @property
     def should_poll(self):
