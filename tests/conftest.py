@@ -40,7 +40,7 @@ def bypass_get_data_fixture():
         yield
 
 
-# In this fixture, we are forcing calls to async_update_data to raise an Exception. This is useful
+# In this fixture, we are forcing calls to api to raise an Exception. This is useful
 # for exception handling.
 @pytest.fixture(name="error_on_get_data")
 def error_get_data_fixture():
@@ -48,5 +48,17 @@ def error_get_data_fixture():
     with patch(
         "fronius_solarweb.Fronius_Solarweb.get_pvsystem_meta_data",
         side_effect=NotAuthorizedException,
+    ):
+        yield
+
+
+# In this fixture, we are forcing calls to coordinator last update success to be false. This is useful
+# for exception handling.
+@pytest.fixture(name="coord_update_error")
+def coord_update_error_fixture():
+    """Simulate error when retrieving data from API."""
+    with patch(
+        "custom_components.solarweb.SolarWebDataUpdateCoordinator.last_update_success",
+        return_value=False,
     ):
         yield
