@@ -2,6 +2,7 @@
 from unittest.mock import patch
 
 import pytest
+from fronius_solarweb.errors import NotAuthorizedException
 
 
 pytest_plugins = "pytest_homeassistant_custom_component"
@@ -45,10 +46,7 @@ def bypass_get_data_fixture():
 def error_get_data_fixture():
     """Simulate error when retrieving data from API."""
     with patch(
-        "custom_components.solarweb.SolarWebDataUpdateCoordinator._async_update_data",
-        side_effect=Exception,
-    ), patch(
-        "custom_components.solarweb.config_flow.SolarWebFlowHandler._validate_input",
-        side_effect=Exception,
+        "fronius_solarweb.Fronius_Solarweb.get_pvsystem_meta_data",
+        side_effect=NotAuthorizedException,
     ):
         yield
