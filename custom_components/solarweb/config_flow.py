@@ -73,7 +73,7 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
             # Return extra info that you want to store in the config entry.
             return {
-                "title": system_data.peakPower,
+                "title": system_data.name,
             }
         except (NotFoundException, NotAuthorizedException):
             return None

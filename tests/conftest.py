@@ -1,11 +1,20 @@
 """Global fixtures for solarweb integration."""
+import json
 from unittest.mock import patch
 
 import pytest
 from fronius_solarweb.errors import NotAuthorizedException
+from fronius_solarweb.schema.pvsystem import PvSystemFlowData
+from fronius_solarweb.schema.pvsystem import PvSystemMetaData
+
+from .const import PV_FLOW_DATA
+from .const import PV_SYS_DATA
 
 
 pytest_plugins = "pytest_homeassistant_custom_component"
+
+sys_data = PvSystemMetaData(json.dumps(PV_SYS_DATA).encode("utf-8"))
+flow_data = PvSystemFlowData(json.dumps(PV_FLOW_DATA).encode("utf-8"))
 
 
 @pytest.fixture(autouse=True)
@@ -32,10 +41,11 @@ def skip_notifications_fixture():
 def bypass_get_data_fixture():
     """Skip calls to get data from API."""
     with patch(
-        "custom_components.solarweb.SolarWebDataUpdateCoordinator._async_update_data"
+        "custom_components.solarweb.SolarWebDataUpdateCoordinator._async_update_data",
+        return_value=flow_data,
     ), patch(
-        "custom_components.solarweb.config_flow.SolarWebFlowHandler._validate_input",
-        return_value={"title": 10},
+        "fronius_solarweb.Fronius_Solarweb.get_pvsystem_meta_data",
+        return_value=sys_data,
     ):
         yield
 
