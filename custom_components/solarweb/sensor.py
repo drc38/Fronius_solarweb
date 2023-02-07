@@ -51,12 +51,11 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
             [self._config.data.get(CONF_PV_ID), description.key]
         )
 
-
     @property
     def available(self):
         """Return if online."""
         return self.coordinator.data.status.isOnline
-    
+
     @property
     def native_value(self):
         """Return the native measurement."""

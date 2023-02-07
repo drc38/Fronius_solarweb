@@ -43,7 +43,8 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data):
     state = hass.states.get("sensor.mock_title_energy")
 
     assert state
-    assert state.state == "1"
+    # Note precision included in state reported
+    assert state.state == "1.0"
 
     assert DOMAIN in hass.data and config_entry.entry_id in hass.data[DOMAIN]
     assert (
