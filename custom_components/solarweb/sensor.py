@@ -8,7 +8,7 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor import SensorEntityDescription
 
 from .const import CHANNEL_HA_MAP
-from .const import CONF_PVID
+from .const import CONF_PV_ID
 from .const import DOMAIN
 from .entity import SolarWebEntity
 
@@ -46,7 +46,9 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         super().__init__(coordinator, config_entry, description)
         self._config = config_entry
         self.entity_description = description
-        self._attr_unique_id = ".".join([self._config.data.get(CONF_PV_ID), self.entity_description.key])
+        self._attr_unique_id = ".".join(
+            [self._config.data.get(CONF_PV_ID), self.entity_description.key]
+        )
 
 
     @property
