@@ -45,7 +45,7 @@ def error_get_data_fixture():
         "custom_components.solarweb.SolarWebDataUpdateCoordinator._async_update_data",
         side_effect=Exception,
     ), patch(
-        "custom_components.solarweb.config_flow.SolarWebFlowHandler.validate_input",
+        "custom_components.solarweb.config_flow.SolarWebFlowHandler._validate_input",
         side_effect=Exception,
     ):
         yield
