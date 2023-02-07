@@ -7,7 +7,7 @@ DOMAIN = "solarweb"
 DOMAIN_DATA = f"{DOMAIN}_data"
 
 ATTRIBUTION = "https://www.solarweb.com/"
-ISSUE_URL = "https://github.com/drc38/fronius-solarweb/issues"
+ISSUE_URL = "https://github.com/drc38/Fronius_solarweb/issues"
 
 # Platforms
 SENSOR = "sensor"

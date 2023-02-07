@@ -2,8 +2,8 @@
   "config": {
     "step": {
       "user": {
-        "title": "Fronius Solar.Web",
-        "description": "If you need help with the configuration have a look here: https://github.com/drc38/fronius-solarweb",
+        "title": "Solar Web",
+        "description": "If you need help with the configuration have a look here: https://github.com/drc38/Fronius_solarweb",
         "data": {
           "pvid": "PV system id",
           "accesskeyid": "API access key id",

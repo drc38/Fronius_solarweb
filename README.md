@@ -1,4 +1,4 @@
-# solarweb Powersensor
+# Fronius Solar.Web Home Assistant integration 
 
 ![coverage badge](./coverage.svg)
 [![GitHub Release][releases-shield]][releases]
@@ -6,20 +6,13 @@
 
 [![hacs][hacsbadge]][hacs]
 [![Project Maintenance][maintenance-shield]][user_profile]
-[![hacs_downloads](https://img.shields.io/github/downloads/drc38/solarweb_powersensor/latest/total)](https://github.com/drc38/solarweb_powersensor/releases/latest)
+[![hacs_downloads](https://img.shields.io/github/downloads/drc38/solarweb/latest/total)](https://github.com/drc38/Fronius_solarweb/releases/latest)
 
 [![Discord][discord-shield]][discord]
 [![Community Forum][forum-shield]][forum]
 
-# Powersensor Home Assistant full integration prototype
+Standalone Home Assistant integration using the Fronius Solar.web API.
 
-This is an attempt at a standalone [Powersensor](https://www.powersensor.com.au) integration with Home Assistant. Kudos to [@izevaka](https://github.com/izevaka/powersensor-home-assistant) for figuring out the sensor interface.
-
-# TO DO
-
-1. Make the connection more robust (reconnect/close etc)
-1. Add extra sensors
-1. Improve testing
 
 # Installation
 
@@ -34,7 +27,7 @@ Add custom repository in _HACS_
 1. Click on HACS in your menu to open the HACS panel, then click on integrations (https://your.domain/hacs/integrations).
 1. Click on the 3 dots in the top right corner.
 1. Select "Custom repositories"
-1. Add the URL to the repository: `https://github.com/drc38/solarweb_Powersensor`
+1. Add the URL to the repository: `https://github.com/drc38/Fronius_solarweb`
 1. Select the integration category.
 1. Click the "ADD" button.
 
@@ -56,13 +49,10 @@ Configuration of the integration is done within the Integrations Panel in Home A
 
 1. Navigate to Integrations
 1. Click _Add Integration_
-1. Search for solarweb Powersensor
-1. Find your plug/gateway's IP address in the Powersensor mobile app
+1. Search for Fronius Solar.Web
+1. Enter your PV System ID and API details from your [Solar.Web](https://www.solarweb.com/) account
 
-![image](https://user-images.githubusercontent.com/20024196/173300192-4092430e-3421-4a5c-a422-3ba066e58856.png)
 
-1. Enter the IP address in the configuration, NB set your router to prevent the IP changing. Click _Submit_
-1. Click _Configure_ on the newly created integration. By default the Main Power sensor and Plug sensor are selected, they can be unselected by clicking _Configure_. A power offset can also be applied to _sensor_ readings eg -100W.
 <!---->
 
 ## Contributions are welcome!
@@ -85,8 +75,8 @@ Code template was mainly taken from [@Ludeeus](https://github.com/ludeeus)'s [in
 [exampleimg]: example.png
 [forum-shield]: https://img.shields.io/badge/community-forum-brightgreen.svg
 [forum]: https://community.home-assistant.io/
-[license-shield]: https://img.shields.io/github/license/drc38/solarweb_Powersensor.svg
+[license-shield]: https://img.shields.io/github/license/drc38/Fronius_solarweb.svg
 [maintenance-shield]: https://img.shields.io/badge/maintainer-%40drc38-blue.svg
-[releases-shield]: https://img.shields.io/github/release/drc38/solarweb_Powersensor.svg
-[releases]: https://github.com/drc38/solarweb_Powersensor/releases
+[releases-shield]: https://img.shields.io/github/release/drc38/Fronius_solarweb.svg
+[releases]: https://github.com/drc38/Fronius_solarweb/releases
 [user_profile]: https://github.com/drc38
