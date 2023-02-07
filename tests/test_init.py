@@ -39,7 +39,8 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data):
     assert await async_setup_entry(hass, config_entry)
     await hass.async_block_till_done()
 
-    state = hass.states.get("sensor.test_energy")
+    # Note title is from Mock rather than PV_SYS_DATA as not using config flow
+    state = hass.states.get("sensor.mock_title_energy")
 
     assert state
     assert state.state == "1"
