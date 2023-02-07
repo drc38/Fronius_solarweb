@@ -16,27 +16,6 @@ from .const import DOMAIN
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
-async def validate_input(data: dict[str, Any]) -> dict[str, Any]:
-    """Validate the user input allows us to connect.
-    Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
-    """
-    try:
-        client = Fronius_Solarweb(
-            data[CONF_ACCESSKEY_ID], data[CONF_ACCESSKEY_VALUE], data[CONF_PV_ID]
-        )
-
-        system_data = await client.get_pvsystem_meta_data()
-        _LOGGER.info("Retrieved PV system data from cloud API")
-
-    except NotAuthorizedException:
-        raise HomeAssistantError.InvalidAuth
-
-    # Return extra info that you want to store in the config entry.
-    return {
-        "title": system_data.peakPower,
-    }
-
-
 class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for solarweb."""
 
@@ -57,7 +36,7 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             try:
-                info = await validate_input(user_input)
+                info = await self._validate_input(user_input)
             except HomeAssistantError.CannotConnect:
                 self._errors["base"] = "cannot_connect"
             except HomeAssistantError.InvalidAuth:
@@ -85,3 +64,23 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             errors=self._errors,
         )
+
+    async def _validate_input(data: dict[str, Any]) -> dict[str, Any]:
+        """Validate the user input allows us to connect.
+        Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
+        """
+        try:
+            client = Fronius_Solarweb(
+                data[CONF_ACCESSKEY_ID], data[CONF_ACCESSKEY_VALUE], data[CONF_PV_ID]
+            )
+
+            system_data = await client.get_pvsystem_meta_data()
+            _LOGGER.info("Retrieved PV system data from cloud API")
+
+        except NotAuthorizedException:
+            raise HomeAssistantError.InvalidAuth
+
+        # Return extra info that you want to store in the config entry.
+        return {
+            "title": system_data.peakPower,
+        }
