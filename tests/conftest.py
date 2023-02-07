@@ -32,6 +32,9 @@ def bypass_get_data_fixture():
     """Skip calls to get data from API."""
     with patch(
         "custom_components.solarweb.SolarWebDataUpdateCoordinator._async_update_data"
+    ), patch(
+        "custom_components.solarweb.config_flow.SolarWebFlowHandler._validate_input",
+        return_value={"title": 10},
     ):
         yield
 
