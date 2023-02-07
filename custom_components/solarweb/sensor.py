@@ -8,11 +8,10 @@ from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor import SensorEntityDescription
 
 from .const import CHANNEL_HA_MAP
+from .const import CONF_PV_ID
 from .const import DOMAIN
 from .entity import SolarWebEntity
 
-# from homeassistant.components.sensor import SensorDeviceClass
-# from homeassistant.components.sensor import SensorStateClass
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -29,7 +28,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
     if coordinator.data.data is not None:
         for sens in coordinator.data.data.channels:
             desc = SolarWebSensorDescription(
-                key=sens.channelName,
+                key=".".join([entry.title, sens.channelName]),
                 name=sens.channelName,
                 native_unit_of_measurement=sens.unit,
             )
@@ -47,8 +46,10 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         super().__init__(coordinator, config_entry, description)
         self._config = config_entry
         self.entity_description = description
-        self._extra_attr = {}
-        self._attr_name = None
+        self._attr_name = description.name
+        self._attr_unique_id = ".".join(
+            [self._config.data.get(CONF_PV_ID), description.key]
+        )
 
     @property
     def available(self):
@@ -56,60 +57,64 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         return self.coordinator.data.status.isOnline
 
     @property
+    def native_value(self):
+        """Return the native measurement."""
+        lst = self.coordinator.data.data.channels
+        value = next(
+            (item for item in lst if item.channelName == self._attr_name), None
+        )
+        if value:
+            return value.value
+        else:
+            return None
+
+    @property
     def native_precision(self):
         """Return the native measurement precision."""
-        dicts = self.coordinator.data.data.channels
+        lst = self.coordinator.data.data.channels
         value = next(
-            (item for item in dicts if item["channelName"] == self._attr_name), None
+            (item for item in lst if item.channelName == self._attr_name), None
         )
-        typ = value.get("channelType")
-        if typ:
-            return CHANNEL_HA_MAP.get(typ).get("precision")
+        if value:
+            return CHANNEL_HA_MAP.get(value.channelType).get("precision")
         else:
             return None
 
     @property
     def state_class(self):
         """Return the state class."""
-        dicts = self.coordinator.data.data.channels
+        lst = self.coordinator.data.data.channels
         value = next(
-            (item for item in dicts if item["channelName"] == self._attr_name), None
+            (item for item in lst if item.channelName == self._attr_name), None
         )
-        typ = value.get("channelType")
-        if typ:
-            return CHANNEL_HA_MAP.get(typ).get("state")
+        if value:
+            return CHANNEL_HA_MAP.get(value.channelType).get("state")
         else:
             return None
 
     @property
     def device_class(self):
         """Return the device class."""
-        dicts = self.coordinator.data.data.channels
+        lst = self.coordinator.data.data.channels
         value = next(
-            (item for item in dicts if item["channelName"] == self._attr_name), None
+            (item for item in lst if item.channelName == self._attr_name), None
         )
-        typ = value.get("channelType")
-        if typ:
-            return CHANNEL_HA_MAP.get(typ).get("device")
+        if value:
+            return CHANNEL_HA_MAP.get(value.channelType).get("device")
         else:
             return None
 
     @property
     def icon(self):
         """Return the state class."""
-        dicts = self.coordinator.data.data.channels
+        lst = self.coordinator.data.data.channels
         value = next(
-            (item for item in dicts if item["channelName"] == self._attr_name), None
+            (item for item in lst if item.channelName == self._attr_name), None
         )
-        typ = value.get("channelType")
-        if typ:
-            return CHANNEL_HA_MAP.get(typ).get("icon")
+        if value:
+            return CHANNEL_HA_MAP.get(value.channelType).get("icon")
         else:
             return None
-
-    # @property
-    # def icon(self):
-    #    """Return the icon of the sensor."""
 
     @property
     def should_poll(self):

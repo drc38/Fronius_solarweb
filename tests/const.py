@@ -10,6 +10,12 @@ MOCK_CONFIG = {
     CONF_PV_ID: "ijkl",
 }
 
+MOCK_CONFIG_INIT = {
+    CONF_ACCESSKEY_ID: "abcd",
+    CONF_ACCESSKEY_VALUE: "efgh",
+    CONF_PV_ID: "xxxx",
+}
+
 PV_SYS_DATA = {
     "pvSystemId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     "name": "Test",

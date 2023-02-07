@@ -18,15 +18,10 @@ class SolarWebEntity(CoordinatorEntity):
         self.entity_description = description
 
     @property
-    def _attr_unique_id(self):
-        """Return a unique ID to use for this entity."""
-        return self.coordinator.data.get(CONF_PV_ID)
-
-    @property
     def device_info(self) -> DeviceInfo:
         return DeviceInfo(
             configuration_url=ATTRIBUTION,
-            identifiers={(DOMAIN, self._attr_unique_id)},
-            name=self.entity_description.name,
+            identifiers={(DOMAIN, self.config_entry.data[CONF_PV_ID])},
+            name=self.config_entry.title,
             manufacturer="Fronius",
         )
