@@ -1,2 +1,2 @@
-homeassistant>=2023.02
+homeassistant>=2023.2
 fronius_solarweb==0.1.4
