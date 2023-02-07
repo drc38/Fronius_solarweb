@@ -29,7 +29,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
         for sens in coordinator.data.data.channels:
             desc = SolarWebSensorDescription(
                 key=".".join([entry.title, sens.channelName]),
-                name=" ".join([entry.title, sens.channelName]),
+                name=sens.channelName,
                 native_unit_of_measurement=sens.unit,
             )
             async_add_devices([SolarWebSensor(coordinator, entry, desc)], False)
@@ -46,8 +46,9 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         super().__init__(coordinator, config_entry, description)
         self._config = config_entry
         self.entity_description = description
+        self._attr_name = description.name
         self._attr_unique_id = ".".join(
-            [self._config.data.get(CONF_PV_ID), self.entity_description.key]
+            [self._config.data.get(CONF_PV_ID), description.key]
         )
 
 
