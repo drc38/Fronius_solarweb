@@ -1,17 +1,17 @@
 """Adds config flow for solarweb."""
-from typing import Any
 import logging
+from typing import Any
+
 import voluptuous as vol
-
-
-from homeassistant import config_entries
-from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import HomeAssistantError
-
 from fronius_solarweb import Fronius_Solarweb
 from fronius_solarweb.errors import NotAuthorizedException
+from homeassistant import config_entries
+from homeassistant.exceptions import HomeAssistantError
 
-from .const import DOMAIN, CONF_PV_ID, CONF_ACCESSKEY_VALUE, CONF_ACCESSKEY_ID
+from .const import CONF_ACCESSKEY_ID
+from .const import CONF_ACCESSKEY_VALUE
+from .const import CONF_PV_ID
+from .const import DOMAIN
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -29,7 +29,7 @@ async def validate_input(data: dict[str, Any]) -> dict[str, Any]:
         _LOGGER.info("Retrieved PV system data from cloud API")
 
     except NotAuthorizedException:
-        raise InvalidAuth
+        raise HomeAssistantError.InvalidAuth
 
     # Return extra info that you want to store in the config entry.
     return {
@@ -58,9 +58,9 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         if user_input is not None:
             try:
                 info = await validate_input(user_input)
-            except CannotConnect:
+            except HomeAssistantError.CannotConnect:
                 self._errors["base"] = "cannot_connect"
-            except InvalidAuth:
+            except HomeAssistantError.InvalidAuth:
                 self._errors["base"] = "invalid_auth"
             except Exception:  # pylint: disable=broad-except
                 _LOGGER.exception("Unexpected exception")

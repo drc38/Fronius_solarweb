@@ -2,7 +2,8 @@
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import ATTRIBUTION, CONF_PV_ID
+from .const import ATTRIBUTION
+from .const import CONF_PV_ID
 from .const import DOMAIN
 
 

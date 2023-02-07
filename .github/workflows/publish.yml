@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v3.1.2
         if: ${{ github.event_name == 'push' }}
         with:
-          name: solarweb_powersensor
+          name: solarweb
           path: ${{ github.workspace }}/custom_components/solarweb
 
       # Pack the dir as a zip and upload to the release

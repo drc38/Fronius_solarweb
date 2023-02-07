@@ -1,5 +1,6 @@
 """Constants for solarweb."""
-from homeassistant.components.sensor import SensorDeviceClass, SensorStateClass
+from homeassistant.components.sensor import SensorDeviceClass
+from homeassistant.components.sensor import SensorStateClass
 
 # Base component constants
 NAME = "Fronius Solar.Web"

@@ -1,19 +1,18 @@
 """Sensor platform for solarweb."""
 from __future__ import annotations
+
 import logging
-
-
 from dataclasses import dataclass
 
-# from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.components.sensor import SensorEntityDescription
 
-# from homeassistant.components.sensor import SensorStateClass
-
-
-from .const import DOMAIN, CHANNEL_HA_MAP
+from .const import CHANNEL_HA_MAP
+from .const import DOMAIN
 from .entity import SolarWebEntity
+
+# from homeassistant.components.sensor import SensorDeviceClass
+# from homeassistant.components.sensor import SensorStateClass
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 

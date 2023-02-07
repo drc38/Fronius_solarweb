@@ -1,4 +1,4 @@
-# Fronius Solar.Web Home Assistant integration 
+# Fronius Solar.Web Home Assistant integration
 
 ![coverage badge](./coverage.svg)
 [![GitHub Release][releases-shield]][releases]
@@ -12,7 +12,6 @@
 [![Community Forum][forum-shield]][forum]
 
 Standalone Home Assistant integration using the Fronius Solar.web API.
-
 
 # Installation
 
@@ -51,7 +50,6 @@ Configuration of the integration is done within the Integrations Panel in Home A
 1. Click _Add Integration_
 1. Search for Fronius Solar.Web
 1. Enter your PV System ID and API details from your [Solar.Web](https://www.solarweb.com/) account
-
 
 <!---->
 

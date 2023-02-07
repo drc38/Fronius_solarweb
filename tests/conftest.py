@@ -1,11 +1,8 @@
 """Global fixtures for solarweb integration."""
-import json
 from unittest.mock import patch
 
 import pytest
-from custom_components.solarweb.api import (
-    solarwebApiClient,
-)
+
 
 pytest_plugins = "pytest_homeassistant_custom_component"
 

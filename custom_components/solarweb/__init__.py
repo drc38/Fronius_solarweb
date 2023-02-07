@@ -8,6 +8,8 @@ import asyncio
 import logging
 from datetime import timedelta
 
+from fronius_solarweb import Fronius_Solarweb
+from fronius_solarweb.schema.pvsystem import PvSystemFlowData
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config
 from homeassistant.core import HomeAssistant
@@ -15,9 +17,10 @@ from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.helpers.update_coordinator import UpdateFailed
 
-from fronius_solarweb import Fronius_Solarweb
-from fronius_solarweb.schema.pvsystem import PvSystemFlowData
-from .const import DOMAIN, CONF_PV_ID, CONF_ACCESSKEY_VALUE, CONF_ACCESSKEY_ID
+from .const import CONF_ACCESSKEY_ID
+from .const import CONF_ACCESSKEY_VALUE
+from .const import CONF_PV_ID
+from .const import DOMAIN
 from .const import PLATFORMS
 from .const import STARTUP_MESSAGE
 
