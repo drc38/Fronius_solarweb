@@ -1,0 +1,21 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Fronius Solar.Web",
+        "description": "If you need help with the configuration have a look here: https://github.com/drc38/fronius-solarweb",
+        "data": {
+          "pvid": "PV system id",
+          "accesskeyid": "API access key id",
+          "accesskeyvalue": "API access key value"
+        }
+      }
+    },
+    "error": {
+      "auth": "Error setting up integration."
+    },
+    "abort": {
+      "single_instance_allowed": "Only a single instance is allowed."
+    }
+  }
+}

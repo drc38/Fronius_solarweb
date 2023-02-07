@@ -1,0 +1,7 @@
+{
+  "name": "Fronius_Solarweb",
+  "homeassistant": "2023.2.0",
+  "render_readme": true,
+  "zip_release": true,
+  "filename": "solarweb.zip"
+}

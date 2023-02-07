@@ -1,0 +1,16 @@
+{
+  "domain": "solarweb",
+  "name": "Fronius Solar.Web",
+  "documentation": "https://github.com/drc38/fronius-solarweb",
+  "issue_tracker": "https://github.com/drc38/fronius-solarweb/issues",
+  "iot_class": "cloud_polling",
+  "version": "0.1.0",
+  "dependencies": [],
+  "config_flow": true,
+  "codeowners": [
+    "@drc38"
+  ],
+  "requirements": [
+    "fronius-solarweb>=0.1.4"
+  ]
+}
