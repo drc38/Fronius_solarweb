@@ -28,7 +28,6 @@ async def async_setup_entry(hass, entry, async_add_devices):
     _LOGGER.debug(coordinator.data)
     if coordinator.data.data is not None:
         for sens in coordinator.data.data.channels:
-
             desc = SolarWebSensorDescription(
                 key=sens.channelName,
                 name=sens.channelName,
