@@ -1,6 +1,4 @@
 """Test solarweb setup process."""
-import asyncio
-
 import pytest
 from custom_components.solarweb import (
     async_reload_entry,
@@ -37,7 +35,12 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data):
     # them to be. Because we have patched the solarwebDataUpdateCoordinator.async_get_data
     # call, no code from fronius_solarweb library.
     assert await async_setup_entry(hass, config_entry)
-    await asyncio.sleep(3)
+    await hass.async_block_till_done()
+
+    state = hass.states.get("sensor.energy")
+
+    assert state
+    assert state.state == "1"
 
     assert DOMAIN in hass.data and config_entry.entry_id in hass.data[DOMAIN]
     assert (

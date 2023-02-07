@@ -52,6 +52,18 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     def available(self):
         """Return if online."""
         return self.coordinator.data.status.isOnline
+    
+    @property
+    def native_value(self):
+        """Return the native measurement."""
+        lst = self.coordinator.data.data.channels
+        value = next(
+            (item for item in lst if item.channelName == self._attr_name), None
+        )
+        if value:
+            return value.value
+        else:
+            return None
 
     @property
     def native_precision(self):
