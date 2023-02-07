@@ -1,5 +1,4 @@
 """Global fixtures for solarweb integration."""
-import json
 from unittest.mock import patch
 
 import pytest
@@ -13,10 +12,8 @@ from .const import PV_SYS_DATA
 
 pytest_plugins = "pytest_homeassistant_custom_component"
 
-j_sys = json.dumps(PV_SYS_DATA)
-j_flow = json.dumps(PV_FLOW_DATA)
-sys_data = PvSystemMetaData(**j_sys)
-flow_data = PvSystemFlowData(**j_flow)
+sys_data = PvSystemMetaData(**PV_SYS_DATA)
+flow_data = PvSystemFlowData(**PV_FLOW_DATA)
 
 
 @pytest.fixture(autouse=True)
