@@ -20,7 +20,7 @@ class SolarWebEntity(CoordinatorEntity):
     @property
     def _attr_unique_id(self):
         """Return a unique ID to use for this entity."""
-        return self.coordinator.data.get(CONF_PV_ID)
+        return self.config_entry.data.get(CONF_PV_ID)
 
     @property
     def device_info(self) -> DeviceInfo:
