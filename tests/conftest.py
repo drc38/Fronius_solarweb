@@ -43,7 +43,7 @@ def skip_notifications_fixture():
 def bypass_get_data_fixture():
     """Skip calls to get data from API."""
     # Data manipulation to match that in SolarWebDataUpdateCoordinator_async_update_data()
-    flow_data = await async_process_data(raw_flow_data)
+    flow_data = async_process_data(raw_flow_data)
     with patch(
         "custom_components.solarweb.SolarWebDataUpdateCoordinator._async_update_data",
         return_value=flow_data,
