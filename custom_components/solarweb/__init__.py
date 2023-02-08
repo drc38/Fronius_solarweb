@@ -88,7 +88,17 @@ class SolarWebDataUpdateCoordinator(DataUpdateCoordinator):
         try:
             data: PvSystemFlowData = await self.api.get_system_flow_data()
             _LOGGER.debug(f"Flow data polled: {data}")
-            return data
+            # Alter Data structure to simplify sensor usage
+            # from [{data}, {data}...]
+            # {channel1: {data}, channel2: {data}..}
+            sens = data.dict()
+            if sens.get("data") or sens["data"].get("channels") is None:
+                return sens
+            for item in sens["data"]["channels"]:
+                sens["data"]["sensors"][item.channelName] = item
+            del sens["data"]["channels"]
+            _LOGGER.debug(f"New flow data structure: {data}")
+            return sens
         except Exception as exception:
             raise UpdateFailed() from exception
 
