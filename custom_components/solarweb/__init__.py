@@ -75,7 +75,7 @@ async def async_process_data(data):
     # "sensors":{channel1: {data}, channel2: {data}..}
     sens = data.dict()
     sens["data"]["sensors"] = {}
-    if sens.get("data") is None or sens["data"].get("channels") is None:
+    if sens["data"].get("channels") is None:
         return sens
     for item in sens["data"]["channels"]:
         sens["data"]["sensors"][item["channelName"]] = item

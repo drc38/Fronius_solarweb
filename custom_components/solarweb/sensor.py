@@ -26,7 +26,7 @@ async def async_setup_entry(hass, entry, async_add_devices):
     coordinator = hass.data[DOMAIN][entry.entry_id]
     _LOGGER.debug(coordinator.data)
     if coordinator.data.get("data") is not None:
-        for k, v in coordinator.data["data"]["sensors"]:
+        for k, v in coordinator.data["data"]["sensors"].items():
             desc = SolarWebSensorDescription(
                 key=".".join([entry.title, v["channelName"]]),
                 name=v["channelName"],
