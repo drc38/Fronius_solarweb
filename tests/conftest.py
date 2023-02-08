@@ -2,6 +2,7 @@
 from unittest.mock import patch
 
 import pytest
+import pytest_asyncio
 from fronius_solarweb.errors import NotAuthorizedException
 from fronius_solarweb.schema.pvsystem import PvSystemFlowData
 from fronius_solarweb.schema.pvsystem import PvSystemMetaData
@@ -39,11 +40,11 @@ def skip_notifications_fixture():
 
 # This fixture, when used, will result in calls to async_update_data to return None. To have the call
 # return a value, we would add the `return_value=<VALUE_TO_RETURN>` parameter to the patch call.
-@pytest.fixture(name="bypass_get_data")
+@pytest_asyncio.fixture(name="bypass_get_data")
 def bypass_get_data_fixture():
     """Skip calls to get data from API."""
     # Data manipulation to match that in SolarWebDataUpdateCoordinator_async_update_data()
-    flow_data = async_process_data(raw_flow_data)
+    flow_data = await async_process_data(raw_flow_data)
     with patch(
         "custom_components.solarweb.SolarWebDataUpdateCoordinator._async_update_data",
         return_value=flow_data,
