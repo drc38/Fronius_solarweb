@@ -5,6 +5,9 @@ import pytest
 from fronius_solarweb.errors import NotAuthorizedException
 from fronius_solarweb.schema.pvsystem import PvSystemFlowData
 from fronius_solarweb.schema.pvsystem import PvSystemMetaData
+from custom_components.solarweb import (
+    async_process_data,
+)
 
 from .const import PV_FLOW_DATA
 from .const import PV_SYS_DATA
@@ -16,10 +19,7 @@ sys_data = PvSystemMetaData(**PV_SYS_DATA)
 raw_flow_data = PvSystemFlowData(**PV_FLOW_DATA)
 
 # Data manipulation to match that in SolarWebDataUpdateCoordinator_async_update_data()
-flow_data = raw_flow_data.dict()
-for item in flow_data["data"]["channels"]:
-    flow_data["data"]["sensors"][item.channelName] = item
-del flow_data["data"]["channels"]
+flow_data = await async_process_data(raw_flow_data)
 
 
 @pytest.fixture(autouse=True)

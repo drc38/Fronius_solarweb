@@ -68,6 +68,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     return True
 
+async def async_process_data(data):
+    """Process raw data to simply HA sensor processing."""
+    # Alter Data Channels structure to simplify sensor usage
+    # from "channels": [{data}, {data}...] to
+    # "sensors":{channel1: {data}, channel2: {data}..}
+    sens = data.dict()
+    sens["data"]["sensors"] = {}
+    if sens.get("data") or sens["data"].get("channels") is None:
+        return sens
+    for item in sens["data"]["channels"]:
+        sens["data"]["sensors"][item["channelName"]] = item
+    del sens["data"]["channels"]
+    _LOGGER.debug(f"New flow data structure: {sens}")
+    return sens
 
 class SolarWebDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
@@ -88,17 +102,8 @@ class SolarWebDataUpdateCoordinator(DataUpdateCoordinator):
         try:
             data: PvSystemFlowData = await self.api.get_system_flow_data()
             _LOGGER.debug(f"Flow data polled: {data}")
-            # Alter Data structure to simplify sensor usage
-            # from [{data}, {data}...]
-            # {channel1: {data}, channel2: {data}..}
-            sens = data.dict()
-            if sens.get("data") or sens["data"].get("channels") is None:
-                return sens
-            for item in sens["data"]["channels"]:
-                sens["data"]["sensors"][item.channelName] = item
-            del sens["data"]["channels"]
-            _LOGGER.debug(f"New flow data structure: {sens}")
-            return sens
+            
+            return await async_process_data(data)
         except Exception as exception:
             raise UpdateFailed() from exception
 
