@@ -18,9 +18,6 @@ pytest_plugins = "pytest_homeassistant_custom_component"
 sys_data = PvSystemMetaData(**PV_SYS_DATA)
 raw_flow_data = PvSystemFlowData(**PV_FLOW_DATA)
 
-# Data manipulation to match that in SolarWebDataUpdateCoordinator_async_update_data()
-flow_data = await async_process_data(raw_flow_data)
-
 
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(enable_custom_integrations):
@@ -45,6 +42,8 @@ def skip_notifications_fixture():
 @pytest.fixture(name="bypass_get_data")
 def bypass_get_data_fixture():
     """Skip calls to get data from API."""
+    # Data manipulation to match that in SolarWebDataUpdateCoordinator_async_update_data()
+    flow_data = await async_process_data(raw_flow_data)
     with patch(
         "custom_components.solarweb.SolarWebDataUpdateCoordinator._async_update_data",
         return_value=flow_data,
