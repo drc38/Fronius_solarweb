@@ -6,7 +6,7 @@
 
 [![hacs][hacsbadge]][hacs]
 [![Project Maintenance][maintenance-shield]][user_profile]
-[![hacs_downloads](https://img.shields.io/github/downloads/drc38/solarweb/latest/total)](https://github.com/drc38/Fronius_solarweb/releases/latest)
+[![hacs_downloads](https://img.shields.io/github/downloads/drc38/Fronius_solarweb/latest/total)](https://github.com/drc38/Fronius_solarweb/releases/latest)
 
 [![Discord][discord-shield]][discord]
 [![Community Forum][forum-shield]][forum]
@@ -40,7 +40,7 @@ Once done, you should see the new repository, appearing in a list like this. Cli
 4. Download _all_ the files from the `custom_components/solarweb/` directory (folder) in this repository.
 5. Place the files you downloaded in the new directory (folder) you created.
 6. Restart Home Assistant
-7. In the HA UI go to "Integrations" click "+" and search for "solarweb_Powersensor"
+7. In the HA UI go to "Integrations" click "+" and search for "solarweb"
 
 # Configuration
 
