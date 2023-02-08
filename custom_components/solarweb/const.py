@@ -60,7 +60,7 @@ CHANNEL_HA_MAP = {
     },
     "Currency": {
         "device": SensorDeviceClass.MONETARY,
-        "state": SensorStateClass.MEASUREMENT,
+        "state": SensorStateClass.TOTAL,
         "precision": 2,
         "icon": "mdi:cash-multiple",
     },
