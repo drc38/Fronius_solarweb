@@ -97,7 +97,7 @@ class SolarWebDataUpdateCoordinator(DataUpdateCoordinator):
             for item in sens["data"]["channels"]:
                 sens["data"]["sensors"][item.channelName] = item
             del sens["data"]["channels"]
-            _LOGGER.debug(f"New flow data structure: {data}")
+            _LOGGER.debug(f"New flow data structure: {sens}")
             return sens
         except Exception as exception:
             raise UpdateFailed() from exception
