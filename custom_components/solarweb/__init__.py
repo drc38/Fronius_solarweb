@@ -7,6 +7,7 @@ https://github.com/drc38/Fronius_solarweb
 import asyncio
 import logging
 from datetime import timedelta
+from typing import Any
 
 from fronius_solarweb import Fronius_Solarweb
 from fronius_solarweb.schema.pvsystem import PvSystemFlowData
@@ -14,6 +15,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.helpers.httpx_client import get_async_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.helpers.update_coordinator import UpdateFailed
 
@@ -46,9 +48,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     access_value = entry.data.get(CONF_ACCESSKEY_VALUE)
     pv_id = entry.data.get(CONF_PV_ID)
 
-    client = Fronius_Solarweb(access_id, access_value, pv_id)
-    # wait for data to be received
-    # await asyncio.sleep(2)
+    httpx_client = get_async_client(hass)
+    client = Fronius_Solarweb(access_id, access_value, pv_id, httpx_client)
 
     coordinator = SolarWebDataUpdateCoordinator(hass, client=client)
     await coordinator.async_refresh()
@@ -69,7 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     return True
 
 
-async def async_process_data(data):
+async def async_process_data(data) -> dict[str, Any]:
     """Process raw data to simply HA sensor processing."""
     # Alter Data Channels structure to simplify sensor usage
     # from "channels": [{data}, {data}...] to
