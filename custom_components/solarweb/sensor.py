@@ -54,7 +54,9 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     @property
     def available(self):
         """Return if online."""
-        return self.coordinator.data["status"]["isOnline"]
+        online = self.coordinator.data["status"]["isOnline"]
+        not_none = self.native_value is not None
+        return online and not_none
 
     @property
     def native_value(self):
