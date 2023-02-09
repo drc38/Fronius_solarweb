@@ -64,7 +64,7 @@ CHANNEL_HA_MAP = {
         "precision": 2,
         "icon": "mdi:cash-multiple",
     },
-    "Percent": {
+    "Percentage": {
         "device": SensorDeviceClass.BATTERY,
         "state": SensorStateClass.MEASUREMENT,
         "precision": 1,

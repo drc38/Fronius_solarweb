@@ -65,7 +65,7 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     def native_precision(self):
         """Return the native measurement precision."""
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
-        if value:
+        if value and value in CHANNEL_HA_MAP:
             return CHANNEL_HA_MAP.get(value).get("precision")
         else:
             return None
@@ -74,7 +74,7 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     def state_class(self):
         """Return the state class."""
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
-        if value:
+        if value and value in CHANNEL_HA_MAP:
             return CHANNEL_HA_MAP.get(value).get("state")
         else:
             return None
@@ -83,7 +83,7 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     def device_class(self):
         """Return the device class."""
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
-        if value:
+        if value and value in CHANNEL_HA_MAP:
             return CHANNEL_HA_MAP.get(value).get("device")
         else:
             return None
@@ -92,7 +92,7 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     def icon(self):
         """Return the state class."""
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
-        if value:
+        if value and value in CHANNEL_HA_MAP:
             return CHANNEL_HA_MAP.get(value).get("icon")
         else:
             return None
