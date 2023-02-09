@@ -3,12 +3,12 @@ from unittest.mock import patch
 
 import pytest
 import pytest_asyncio
-from fronius_solarweb.errors import NotAuthorizedException
-from fronius_solarweb.schema.pvsystem import PvSystemFlowData
-from fronius_solarweb.schema.pvsystem import PvSystemMetaData
 from custom_components.solarweb import (
     async_process_data,
 )
+from fronius_solarweb.errors import NotAuthorizedException
+from fronius_solarweb.schema.pvsystem import PvSystemFlowData
+from fronius_solarweb.schema.pvsystem import PvSystemMetaData
 
 from .const import PV_FLOW_DATA
 from .const import PV_SYS_DATA

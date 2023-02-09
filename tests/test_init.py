@@ -1,6 +1,7 @@
 """Test solarweb setup process."""
-import pytest
 import logging
+
+import pytest
 from custom_components.solarweb import (
     async_reload_entry,
 )
