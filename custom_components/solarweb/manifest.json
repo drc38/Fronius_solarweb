@@ -8,5 +8,5 @@
   "dependencies": [],
   "config_flow": true,
   "codeowners": ["@drc38"],
-  "requirements": ["fronius-solarweb>=0.1.5"]
+  "requirements": ["fronius-solarweb>=0.2.0"]
 }

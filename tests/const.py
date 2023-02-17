@@ -51,3 +51,26 @@ PV_FLOW_DATA = {
         ],
     },
 }
+
+PV_AGGR_DATA = {
+    "pvSystemId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "data": [
+        {
+            "logDateTime": "total",
+            "channels": [
+                {
+                    "channelName": "EnergyProductionTotal",
+                    "channelType": "Energy",
+                    "unit": "Wh",
+                    "value": 2000,
+                },
+                {
+                    "channelName": "Savings",
+                    "channelType": "Currency",
+                    "unit": "$",
+                    "value": 0.5,
+                },
+            ],
+        }
+    ],
+}

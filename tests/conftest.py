@@ -7,9 +7,11 @@ from custom_components.solarweb import (
     async_process_data,
 )
 from fronius_solarweb.errors import NotAuthorizedException
+from fronius_solarweb.schema.pvsystem import PvSystemAggrDataV2
 from fronius_solarweb.schema.pvsystem import PvSystemFlowData
 from fronius_solarweb.schema.pvsystem import PvSystemMetaData
 
+from .const import PV_AGGR_DATA
 from .const import PV_FLOW_DATA
 from .const import PV_SYS_DATA
 
@@ -18,6 +20,7 @@ pytest_plugins = "pytest_homeassistant_custom_component"
 
 sys_data = PvSystemMetaData(**PV_SYS_DATA)
 raw_flow_data = PvSystemFlowData(**PV_FLOW_DATA)
+raw_aggr_data = PvSystemAggrDataV2(**PV_AGGR_DATA)
 
 
 @pytest.fixture(autouse=True)
@@ -43,11 +46,15 @@ def skip_notifications_fixture():
 @pytest_asyncio.fixture(name="bypass_get_data")
 async def bypass_get_data_fixture():
     """Skip calls to get data from API."""
-    # Data manipulation to match that in SolarWebDataUpdateCoordinator_async_update_data()
+    # Data manipulation to match that in FlowDataUpdateCoordinator_async_update_data()
     flow_data = await async_process_data(raw_flow_data)
+    aggr_data = await async_process_data(raw_aggr_data)
     with patch(
-        "custom_components.solarweb.SolarWebDataUpdateCoordinator._async_update_data",
+        "custom_components.solarweb.FlowDataUpdateCoordinator._async_update_data",
         return_value=flow_data,
+    ), patch(
+        "custom_components.solarweb.AggrDataUpdateCoordinator._async_update_data",
+        return_value=aggr_data,
     ), patch(
         "fronius_solarweb.Fronius_Solarweb.get_pvsystem_meta_data",
         return_value=sys_data,
@@ -64,7 +71,7 @@ def error_get_data_fixture():
         "fronius_solarweb.Fronius_Solarweb.get_pvsystem_meta_data",
         side_effect=NotAuthorizedException,
     ), patch(
-        "custom_components.solarweb.SolarWebDataUpdateCoordinator._async_update_data",
+        "custom_components.solarweb.FlowDataUpdateCoordinator._async_update_data",
         side_effect=Exception,
     ):
         yield
