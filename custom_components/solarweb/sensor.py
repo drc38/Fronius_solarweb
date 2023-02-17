@@ -71,25 +71,37 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     def suggested_display_precision(self) -> int | None:
         """Return the native measurement precision."""
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
-        return CHANNEL_HA_MAP.get(value).get("precision")
+        if value in CHANNEL_HA_MAP:
+            return CHANNEL_HA_MAP.get(value).get("precision")
+        else:
+            return None
 
     @property
     def state_class(self):
         """Return the state class."""
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
-        return CHANNEL_HA_MAP.get(value).get("state")
+        if value in CHANNEL_HA_MAP:
+            return CHANNEL_HA_MAP.get(value).get("state")
+        else:
+            return None
 
     @property
     def device_class(self):
         """Return the device class."""
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
-        return CHANNEL_HA_MAP.get(value).get("device")
+        if value in CHANNEL_HA_MAP:
+            return CHANNEL_HA_MAP.get(value).get("device")
+        else:
+            return None
 
     @property
     def icon(self):
         """Return the state class."""
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
-        return CHANNEL_HA_MAP.get(value).get("icon")
+        if value in CHANNEL_HA_MAP:
+            return CHANNEL_HA_MAP.get(value).get("icon")
+        else:
+            return None
 
     @property
     def should_poll(self):
