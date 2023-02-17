@@ -23,16 +23,17 @@ class SolarWebSensorDescription(SensorEntityDescription):
 
 async def async_setup_entry(hass, entry, async_add_devices):
     """Setup sensor platform."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
-    _LOGGER.debug(coordinator.data)
-    if coordinator.data.get("data") is not None:
-        for k, v in coordinator.data["data"]["sensors"].items():
-            desc = SolarWebSensorDescription(
-                key=".".join([entry.title, v["channelName"]]),
-                name=v["channelName"],
-                native_unit_of_measurement=v["unit"],
-            )
-            async_add_devices([SolarWebSensor(coordinator, entry, desc)], False)
+    coordinators = hass.data[DOMAIN][entry.entry_id]
+    # _LOGGER.debug(coordinator.data)
+    for coordinator in coordinators:
+        if coordinator.data.get("data") is not None:
+            for k, v in coordinator.data["data"]["sensors"].items():
+                desc = SolarWebSensorDescription(
+                    key=".".join([entry.title, v["channelName"]]),
+                    name=v["channelName"],
+                    native_unit_of_measurement=v["unit"],
+                )
+                async_add_devices([SolarWebSensor(coordinator, entry, desc)], False)
 
 
 class SolarWebSensor(SolarWebEntity, SensorEntity):
@@ -54,7 +55,10 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
     @property
     def available(self):
         """Return if online."""
-        online = self.coordinator.data["status"]["isOnline"]
+        if self.coordinator.data.get("status"):
+            online = self.coordinator.data["status"].get("isOnline", True)
+        else:
+            online = True
         not_none = self.native_value is not None
         return online and not_none
 
@@ -64,40 +68,28 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         return self.coordinator.data["data"]["sensors"][self._attr_name]["value"]
 
     @property
-    def native_precision(self):
+    def suggested_display_precision(self) -> int | None:
         """Return the native measurement precision."""
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
-        if value and value in CHANNEL_HA_MAP:
-            return CHANNEL_HA_MAP.get(value).get("precision")
-        else:
-            return None
+        return CHANNEL_HA_MAP.get(value).get("precision")
 
     @property
     def state_class(self):
         """Return the state class."""
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
-        if value and value in CHANNEL_HA_MAP:
-            return CHANNEL_HA_MAP.get(value).get("state")
-        else:
-            return None
+        return CHANNEL_HA_MAP.get(value).get("state")
 
     @property
     def device_class(self):
         """Return the device class."""
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
-        if value and value in CHANNEL_HA_MAP:
-            return CHANNEL_HA_MAP.get(value).get("device")
-        else:
-            return None
+        return CHANNEL_HA_MAP.get(value).get("device")
 
     @property
     def icon(self):
         """Return the state class."""
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
-        if value and value in CHANNEL_HA_MAP:
-            return CHANNEL_HA_MAP.get(value).get("icon")
-        else:
-            return None
+        return CHANNEL_HA_MAP.get(value).get("icon")
 
     @property
     def should_poll(self):

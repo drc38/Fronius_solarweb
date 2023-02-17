@@ -10,6 +10,7 @@ from datetime import timedelta
 from typing import Any
 
 from fronius_solarweb import Fronius_Solarweb
+from fronius_solarweb.schema.pvsystem import PvSystemAggrDataV2
 from fronius_solarweb.schema.pvsystem import PvSystemFlowData
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config
@@ -51,16 +52,22 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     httpx_client = get_async_client(hass)
     client = Fronius_Solarweb(access_id, access_value, pv_id, httpx_client)
 
-    coordinator = SolarWebDataUpdateCoordinator(hass, client=client)
-    await coordinator.async_refresh()
+    coordinatorFlow = FlowDataUpdateCoordinator(hass, client=client)
+    coordinatorAggr = AggrDataUpdateCoordinator(hass, client=client)
 
-    if not coordinator.last_update_success:
-        raise ConfigEntryNotReady
+    coordinators = [coordinatorFlow, coordinatorAggr]
 
-    hass.data[DOMAIN][entry.entry_id] = coordinator
+    for coord in coordinators:
+        await coord.async_refresh()
+
+        if not coord.last_update_success:
+            raise ConfigEntryNotReady
+
+    hass.data[DOMAIN][entry.entry_id] = coordinators
 
     for platform in PLATFORMS:
-        coordinator.platforms.append(platform)
+        for coord in coordinators:
+            coord.platforms.append(platform)
         hass.async_add_job(
             hass.config_entries.async_forward_entry_setup(entry, platform)
         )
@@ -76,17 +83,21 @@ async def async_process_data(data) -> dict[str, Any]:
     # from "channels": [{data}, {data}...] to
     # "sensors":{channel1: {data}, channel2: {data}..}
     sens = data.dict()
+    _LOGGER.debug(f"Data converted to dict: {sens}")
+    if isinstance(sens["data"], list):
+        sens["data"] = sens["data"][0]
+
     sens["data"]["sensors"] = {}
     if sens["data"].get("channels") is None:
         return sens
     for item in sens["data"]["channels"]:
         sens["data"]["sensors"][item["channelName"]] = item
     del sens["data"]["channels"]
-    _LOGGER.debug(f"New flow data structure: {sens}")
+    _LOGGER.debug(f"New data structure: {sens}")
     return sens
 
 
-class SolarWebDataUpdateCoordinator(DataUpdateCoordinator):
+class FlowDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
 
     def __init__(
@@ -105,6 +116,31 @@ class SolarWebDataUpdateCoordinator(DataUpdateCoordinator):
         try:
             data: PvSystemFlowData = await self.api.get_system_flow_data()
             _LOGGER.debug(f"Flow data polled: {data}")
+
+            return await async_process_data(data)
+        except Exception as exception:
+            raise UpdateFailed() from exception
+
+
+class AggrDataUpdateCoordinator(DataUpdateCoordinator):
+    """Class to manage fetching data from the API."""
+
+    def __init__(
+        self,
+        hass: HomeAssistant,
+        client: Fronius_Solarweb,
+    ) -> None:
+        """Initialize."""
+        self.api = client
+        self.platforms = []
+
+        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=SCAN_INTERVAL)
+
+    async def _async_update_data(self):
+        """Update data via library."""
+        try:
+            data: PvSystemAggrDataV2 = await self.api.get_system_aggr_data_v2()
+            _LOGGER.debug(f"Aggregated data polled: {data}")
 
             return await async_process_data(data)
         except Exception as exception:

@@ -36,7 +36,7 @@ CHANNEL_HA_MAP = {
     },
     "Energy": {
         "device": SensorDeviceClass.ENERGY,
-        "state": SensorStateClass.TOTAL,
+        "state": SensorStateClass.TOTAL_INCREASING,
         "precision": 1,
         "icon": "mdi:solar-power-variant",
     },

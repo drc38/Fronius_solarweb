@@ -12,7 +12,7 @@ from custom_components.solarweb import (
     async_unload_entry,
 )
 from custom_components.solarweb import (
-    SolarWebDataUpdateCoordinator,
+    FlowDataUpdateCoordinator,
 )
 from custom_components.solarweb.const import (
     DOMAIN,
@@ -37,28 +37,33 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog):
     )
 
     # Set up the entry and assert that the values set during setup are where we expect
-    # them to be. Because we have patched the solarwebDataUpdateCoordinator.async_get_data
+    # them to be. Because we have patched the FlowDataUpdateCoordinator.async_get_data
     # call, no code from fronius_solarweb library.
     assert await async_setup_entry(hass, config_entry)
     await hass.async_block_till_done()
 
     # Note title is from Mock rather than PV_SYS_DATA as not using config flow
-    state = hass.states.get("sensor.mock_title_energy")
+    stateFlow = hass.states.get("sensor.mock_title_energy")
+    stateAggr = hass.states.get("sensor.mock_title_savings")
 
-    assert state
+    assert stateFlow
     # Note precision included in state reported
-    assert state.state == "1.0"
+    assert stateFlow.state == "1.0"
+
+    assert stateAggr
+    # Note precision included in state reported
+    assert stateFlow.state == "0.50"
 
     assert DOMAIN in hass.data and config_entry.entry_id in hass.data[DOMAIN]
     assert (
-        type(hass.data[DOMAIN][config_entry.entry_id]) == SolarWebDataUpdateCoordinator
+        type(hass.data[DOMAIN][config_entry.entry_id][0]) == FlowDataUpdateCoordinator
     )
 
     # Reload the entry and assert that the data from above is still there
     assert await async_reload_entry(hass, config_entry) is None
     assert DOMAIN in hass.data and config_entry.entry_id in hass.data[DOMAIN]
     assert (
-        type(hass.data[DOMAIN][config_entry.entry_id]) == SolarWebDataUpdateCoordinator
+        type(hass.data[DOMAIN][config_entry.entry_id][0]) == FlowDataUpdateCoordinator
     )
 
     # Unload the entry and verify that the data has been removed
