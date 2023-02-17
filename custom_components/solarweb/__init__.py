@@ -149,7 +149,8 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Handle removal of an entry."""
-    coordinator = hass.data[DOMAIN][entry.entry_id]
+    # All coordinators have platforms so only use first to unload
+    coordinator = hass.data[DOMAIN][entry.entry_id][0]
     unloaded = all(
         await asyncio.gather(
             *[
