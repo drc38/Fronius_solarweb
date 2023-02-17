@@ -7,7 +7,7 @@ from custom_components.solarweb import (
     async_process_data,
 )
 from fronius_solarweb.errors import NotAuthorizedException
-from fronius_solarweb.schema.pvsystem import PvSystemAggrData
+from fronius_solarweb.schema.pvsystem import PvSystemAggrDataV2
 from fronius_solarweb.schema.pvsystem import PvSystemFlowData
 from fronius_solarweb.schema.pvsystem import PvSystemMetaData
 
@@ -20,7 +20,7 @@ pytest_plugins = "pytest_homeassistant_custom_component"
 
 sys_data = PvSystemMetaData(**PV_SYS_DATA)
 raw_flow_data = PvSystemFlowData(**PV_FLOW_DATA)
-raw_aggr_data = PvSystemAggrData(**PV_AGGR_DATA)
+raw_aggr_data = PvSystemAggrDataV2(**PV_AGGR_DATA)
 
 
 @pytest.fixture(autouse=True)
