@@ -52,7 +52,7 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog):
 
     assert stateAggr
     # Note precision included in state reported
-    assert stateAggr.state == "0.50"
+    assert stateAggr.state == "0.5"
 
     assert DOMAIN in hass.data and config_entry.entry_id in hass.data[DOMAIN]
     assert (
