@@ -66,7 +66,7 @@ PV_AGGR_DATA = {
                 },
                 {
                     "channelName": "Savings",
-                    "channelType": "Monetary",
+                    "channelType": "Currency",
                     "unit": "$",
                     "value": 0.5,
                 },
