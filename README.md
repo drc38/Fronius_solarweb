@@ -11,7 +11,7 @@
 [![Discord][discord-shield]][discord]
 [![Community Forum][forum-shield]][forum]
 
-Standalone Home Assistant integration using the Fronius Solar.web API. It is intended if your Fronius is on a different network to HA, otherwise you are best to use the built-in integration which will have more sensors and a faster refresh rate.
+Standalone Home Assistant integration using the Fronius Solar.web API. It is intended for use when your Fronius is on a different network to HA, otherwise you are best to use the built-in integration which will have more sensors and a faster refresh rate.
 
 # Installation
 
