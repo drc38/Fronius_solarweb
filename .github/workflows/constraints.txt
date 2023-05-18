@@ -1,5 +1,5 @@
 pip>=8.0.3,<23.2
-pre-commit==3.3.1
+pre-commit==3.3.2
 bandit==1.7.5
 black==23.3.0
 flake8==6.0.0
