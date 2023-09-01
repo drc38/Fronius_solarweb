@@ -67,7 +67,7 @@ async def test_setup_unload_and_reload_entry(hass, return_data, caplog):
 #     )
 
 #     # Unload the entry and verify that the data has been removed
-     assert await async_unload_entry(hass, config_entry)
+    assert await async_unload_entry(hass, config_entry)
 #     assert config_entry.entry_id not in hass.data[DOMAIN]
 
 
