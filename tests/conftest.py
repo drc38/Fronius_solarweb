@@ -59,7 +59,7 @@ async def bypass_get_data_fixture():
 # This fixture, when used, will result in calls to async_update_data to return None. To have the call
 # return a value, we would add the `return_value=<VALUE_TO_RETURN>` parameter to the patch call.
 @pytest_asyncio.fixture(name="return_data")
-async def bypass_get_data_fixture():
+async def return_data_fixture():
     """Skip calls to get data from API."""
     # Data manipulation to match that in FlowDataUpdateCoordinator_async_update_data()
     flow_data = await async_process_data(raw_flow_data)
