@@ -148,6 +148,11 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
+    
+    # Not sure why needed but prevents lingering timers from DataUpdateCoordinator
+    for coord in hass.data[DOMAIN][entry.entry_id]:
+        await coord.async_shutdown()
+
     unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
     if unload_ok:
