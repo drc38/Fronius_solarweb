@@ -47,6 +47,21 @@ def skip_notifications_fixture():
 async def bypass_get_data_fixture():
     """Skip calls to get data from API."""
     # Data manipulation to match that in FlowDataUpdateCoordinator_async_update_data()
+    with patch(
+        "custom_components.solarweb.FlowDataUpdateCoordinator._async_update_data"
+    ), patch(
+        "custom_components.solarweb.AggrDataUpdateCoordinator._async_update_data"
+    ), patch(
+        "fronius_solarweb.Fronius_Solarweb.get_pvsystem_meta_data"
+    ):
+        yield
+
+# This fixture, when used, will result in calls to async_update_data to return None. To have the call
+# return a value, we would add the `return_value=<VALUE_TO_RETURN>` parameter to the patch call.
+@pytest_asyncio.fixture(name="return_data")
+async def bypass_get_data_fixture():
+    """Skip calls to get data from API."""
+    # Data manipulation to match that in FlowDataUpdateCoordinator_async_update_data()
     flow_data = await async_process_data(raw_flow_data)
     aggr_data = await async_process_data(raw_aggr_data)
     with patch(
@@ -60,7 +75,6 @@ async def bypass_get_data_fixture():
         return_value=sys_data,
     ):
         yield
-
 
 # In this fixture, we are forcing calls to api to raise an Exception. This is useful
 # for exception handling.
