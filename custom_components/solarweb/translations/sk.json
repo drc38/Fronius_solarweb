@@ -1,0 +1,21 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Solar Web",
+        "description": "Ak potrebujete pomoc s konfiguráciou, pozrite sa sem: https://github.com/drc38/Fronius_solarweb",
+        "data": {
+          "pvid": "FV system id",
+          "accesskeyid": "ID prístupového kľúča API",
+          "accesskeyvalue": "Hodnota kľúča prístupu API"
+        }
+      }
+    },
+    "error": {
+      "auth": "Chyba pri nastavovaní integrácie."
+    },
+    "abort": {
+      "single_instance_allowed": "Povolený je len jeden prípad."
+    }
+  }
+}
