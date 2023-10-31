@@ -52,6 +52,7 @@ Configuration of the integration is done within the Integrations Panel in Home A
 1. Enter your PV System ID and API details from your [Solar.Web](https://www.solarweb.com/) account
 
 If you have an issue ensure the api is working at [official test site](https://api.solarweb.com/swqapi/index.html)
+
 <!---->
 
 ## Contributions are welcome!
