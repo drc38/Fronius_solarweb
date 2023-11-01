@@ -44,8 +44,8 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog):
     await hass.async_block_till_done()
 
     # Note title is from Mock rather than PV_SYS_DATA as not using config flow
-    stateFlow = hass.states.get("sensor.mock_test_energy")
-    stateAggr = hass.states.get("sensor.mock_test_savings")
+    stateFlow = hass.states.get("sensor.test_energy")
+    stateAggr = hass.states.get("sensor.test_savings")
 
     assert stateFlow
     # Note precision included in state reported
