@@ -25,3 +25,9 @@ class SolarWebEntity(CoordinatorEntity):
             name=self.config_entry.title,
             manufacturer="Fronius",
         )
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        """Handle updated data from the coordinator."""
+        # self._attr_is_on = self.coordinator.data[self.idx]["state"]
+        self.async_write_ha_state()
