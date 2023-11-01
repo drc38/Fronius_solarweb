@@ -102,4 +102,3 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
             return CHANNEL_HA_MAP.get(value).get("icon")
         else:
             return None
-
