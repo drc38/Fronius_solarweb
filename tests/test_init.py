@@ -35,7 +35,7 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog):
     config_entry = MockConfigEntry(
         domain=DOMAIN, data=MOCK_CONFIG_INIT, entry_id="test_setup", title="test_setup"
     )
-    config_entry.add_to_hass(hass)
+    # config_entry.add_to_hass(hass)
 
     # Set up the entry and assert that the values set during setup are where we expect
     # them to be. Because we have patched the FlowDataUpdateCoordinator.async_get_data
@@ -70,7 +70,7 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog):
     # Unload the entry and verify that the data has been removed
     for coord in hass.data[DOMAIN][config_entry.entry_id]:
         await coord.async_shutdown()
-    
+
     assert await async_unload_entry(hass, config_entry)
     assert config_entry.entry_id not in hass.data[DOMAIN]
 
