@@ -50,10 +50,10 @@ async def bypass_get_data_fixture():
     flow_data = await async_process_data(raw_flow_data)
     aggr_data = await async_process_data(raw_aggr_data)
     with patch(
-        "custom_components.solarweb.FlowDataUpdateCoordinator._async_update_data",
+        "custom_components.solarweb.FlowDataUpdateCoordinator.async_update_data",
         return_value=flow_data,
     ), patch(
-        "custom_components.solarweb.AggrDataUpdateCoordinator._async_update_data",
+        "custom_components.solarweb.AggrDataUpdateCoordinator.async_update_data",
         return_value=aggr_data,
     ), patch(
         "fronius_solarweb.Fronius_Solarweb.get_pvsystem_meta_data",
@@ -71,7 +71,7 @@ def error_get_data_fixture():
         "fronius_solarweb.Fronius_Solarweb.get_pvsystem_meta_data",
         side_effect=NotAuthorizedException,
     ), patch(
-        "custom_components.solarweb.FlowDataUpdateCoordinator._async_update_data",
+        "custom_components.solarweb.FlowDataUpdateCoordinator.async_update_data",
         side_effect=Exception,
     ):
         yield

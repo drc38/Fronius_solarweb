@@ -33,8 +33,9 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog):
     caplog.set_level(logging.DEBUG)
     # Create a mock entry so we don't have to go through config flow
     config_entry = MockConfigEntry(
-        domain=DOMAIN, data=MOCK_CONFIG_INIT, entry_id="test"
+        domain=DOMAIN, data=MOCK_CONFIG_INIT, entry_id="test_setup", title="test_setup"
     )
+    config_entry.add_to_hass(hass)
 
     # Set up the entry and assert that the values set during setup are where we expect
     # them to be. Because we have patched the FlowDataUpdateCoordinator.async_get_data
@@ -43,8 +44,8 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog):
     await hass.async_block_till_done()
 
     # Note title is from Mock rather than PV_SYS_DATA as not using config flow
-    stateFlow = hass.states.get("sensor.mock_title_energy")
-    stateAggr = hass.states.get("sensor.mock_title_savings")
+    stateFlow = hass.states.get("sensor.test_setup_energy")
+    stateAggr = hass.states.get("sensor.test_setup_savings")
 
     assert stateFlow
     # Note precision included in state reported
@@ -67,6 +68,9 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog):
     )
 
     # Unload the entry and verify that the data has been removed
+    for coord in hass.data[DOMAIN][config_entry.entry_id]:
+        await coord.async_shutdown()
+    
     assert await async_unload_entry(hass, config_entry)
     assert config_entry.entry_id not in hass.data[DOMAIN]
 
@@ -74,8 +78,9 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog):
 async def test_setup_entry_exception(hass, error_on_get_data):
     """Test ConfigEntryNotReady when API raises an exception during entry setup."""
     config_entry = MockConfigEntry(
-        domain=DOMAIN, data=MOCK_CONFIG_INIT, entry_id="test"
+        domain=DOMAIN, data=MOCK_CONFIG_INIT, entry_id="test", title="test"
     )
+    config_entry.add_to_hass(hass)
 
     # In this case we are testing the condition where async_setup_entry raises
     # ConfigEntryNotReady using the `error_on_get_data` fixture which simulates

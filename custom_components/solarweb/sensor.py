@@ -102,10 +102,3 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
             return CHANNEL_HA_MAP.get(value).get("icon")
         else:
             return None
-
-    @property
-    def should_poll(self):
-        """Return True if entity has to be polled for state.
-        False if entity pushes its state to HA.
-        """
-        return True

@@ -57,10 +57,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     coordinators = [coordinatorFlow, coordinatorAggr]
 
     for coord in coordinators:
-        await coord.async_refresh()
-
-        if not coord.last_update_success:
-            raise ConfigEntryNotReady
+        await coord.async_config_entry_first_refresh()
 
     hass.data[DOMAIN][entry.entry_id] = coordinators
 
@@ -71,7 +68,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             hass.config_entries.async_forward_entry_setup(entry, platform)
         )
 
-    entry.add_update_listener(async_reload_entry)
+    entry.async_on_unload(entry.add_update_listener(async_reload_entry))
 
     return True
 
@@ -103,6 +100,7 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
         self,
         hass: HomeAssistant,
         client: Fronius_Solarweb,
+        update_method=async_update_data,
     ) -> None:
         """Initialize."""
         self.api = client
@@ -110,7 +108,7 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
 
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=SCAN_INTERVAL)
 
-    async def _async_update_data(self):
+    async def async_update_data(self):
         """Update data via library."""
         try:
             data: PvSystemFlowData = await self.api.get_system_flow_data()
@@ -128,6 +126,7 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
         self,
         hass: HomeAssistant,
         client: Fronius_Solarweb,
+        update_method=async_update_data,
     ) -> None:
         """Initialize."""
         self.api = client
@@ -135,7 +134,7 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
 
         super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=SCAN_INTERVAL)
 
-    async def _async_update_data(self):
+    async def async_update_data(self):
         """Update data via library."""
         try:
             data: PvSystemAggrDataV2 = await self.api.get_system_aggr_data_v2()
