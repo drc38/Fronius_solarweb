@@ -22,6 +22,7 @@ sys_data = PvSystemMetaData(**PV_SYS_DATA)
 raw_flow_data = PvSystemFlowData(**PV_FLOW_DATA)
 raw_aggr_data = PvSystemAggrDataV2(**PV_AGGR_DATA)
 
+@patch("custom_components.solarweb.SCAN_INTERVAL", None)
 
 @pytest.fixture(autouse=True)
 def auto_enable_custom_integrations(enable_custom_integrations):
