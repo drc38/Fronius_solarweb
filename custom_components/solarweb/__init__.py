@@ -96,6 +96,16 @@ async def async_process_data(data) -> dict[str, Any]:
 class FlowDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
 
+    async def async_update_data(self):
+        """Update data via library."""
+        try:
+            data: PvSystemFlowData = await self.api.get_system_flow_data()
+            _LOGGER.debug(f"Flow data polled: {data}")
+
+            return await async_process_data(data)
+        except Exception as exception:
+            raise UpdateFailed() from exception
+
     def __init__(
         self,
         hass: HomeAssistant,
@@ -113,6 +123,10 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
             update_method=async_update_data,
         )
 
+
+class AggrDataUpdateCoordinator(DataUpdateCoordinator):
+    """Class to manage fetching data from the API."""
+
     async def async_update_data(self):
         """Update data via library."""
         try:
@@ -122,10 +136,6 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
             return await async_process_data(data)
         except Exception as exception:
             raise UpdateFailed() from exception
-
-
-class AggrDataUpdateCoordinator(DataUpdateCoordinator):
-    """Class to manage fetching data from the API."""
 
     def __init__(
         self,
@@ -144,16 +154,6 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=SCAN_INTERVAL,
             update_method=async_update_data,
         )
-
-    async def async_update_data(self):
-        """Update data via library."""
-        try:
-            data: PvSystemAggrDataV2 = await self.api.get_system_aggr_data_v2()
-            _LOGGER.debug(f"Aggregated data polled: {data}")
-
-            return await async_process_data(data)
-        except Exception as exception:
-            raise UpdateFailed() from exception
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
