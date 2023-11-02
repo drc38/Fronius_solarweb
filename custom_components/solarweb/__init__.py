@@ -100,13 +100,18 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
         self,
         hass: HomeAssistant,
         client: Fronius_Solarweb,
-        update_method=async_update_data,
     ) -> None:
         """Initialize."""
         self.api = client
         self.platforms = []
 
-        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=SCAN_INTERVAL)
+        super().__init__(
+            hass,
+            _LOGGER,
+            name=DOMAIN,
+            update_interval=SCAN_INTERVAL,
+            update_method=async_update_data,
+        )
 
     async def async_update_data(self):
         """Update data via library."""
@@ -132,7 +137,13 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
         self.api = client
         self.platforms = []
 
-        super().__init__(hass, _LOGGER, name=DOMAIN, update_interval=SCAN_INTERVAL)
+        super().__init__(
+            hass,
+            _LOGGER,
+            name=DOMAIN,
+            update_interval=SCAN_INTERVAL,
+            update_method=async_update_data,
+        )
 
     async def async_update_data(self):
         """Update data via library."""
