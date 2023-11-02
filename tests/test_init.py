@@ -33,7 +33,7 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog):
     caplog.set_level(logging.DEBUG)
     # Create a mock entry so we don't have to go through config flow
     config_entry = MockConfigEntry(
-        domain=DOMAIN, data=MOCK_CONFIG_INIT, entry_id="test", title="test"
+        domain=DOMAIN, data=MOCK_CONFIG_INIT, entry_id="test_setup", title="test_setup"
     )
     config_entry.add_to_hass(hass)
 
@@ -44,8 +44,8 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog):
     await hass.async_block_till_done()
 
     # Note title is from Mock rather than PV_SYS_DATA as not using config flow
-    stateFlow = hass.states.get("sensor.test_energy")
-    stateAggr = hass.states.get("sensor.test_savings")
+    stateFlow = hass.states.get("sensor.test_setup_energy")
+    stateAggr = hass.states.get("sensor.test_setup_savings")
 
     assert stateFlow
     # Note precision included in state reported
