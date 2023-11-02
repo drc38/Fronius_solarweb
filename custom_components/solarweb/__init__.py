@@ -14,7 +14,6 @@ from fronius_solarweb.schema.pvsystem import PvSystemFlowData
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import Config
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.httpx_client import get_async_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 from homeassistant.helpers.update_coordinator import UpdateFailed
@@ -143,7 +142,6 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
             update_interval=SCAN_INTERVAL,
             update_method=self.async_update_data,
         )
-
 
     async def async_update_data(self):
         """Update data via library."""
