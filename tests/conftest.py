@@ -70,6 +70,7 @@ def error_get_data_fixture():
     ):
         yield
 
+
 # In this fixture, we are forcing calls to api to raise an Exception. This is useful
 # for exception handling.
 @pytest.fixture(name="error_with_api")
