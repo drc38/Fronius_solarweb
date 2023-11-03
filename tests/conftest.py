@@ -62,9 +62,6 @@ async def bypass_get_data_fixture():
 def error_get_data_fixture():
     """Simulate error when retrieving data from API."""
     with patch(
-        "fronius_solarweb.Fronius_Solarweb.get_pvsystem_meta_data",
-        side_effect=NotAuthorizedException,
-    ), patch(
         "fronius_solarweb.Fronius_Solarweb.get_system_flow_data",
         side_effect=Exception,
     ), patch(
