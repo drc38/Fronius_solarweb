@@ -73,7 +73,7 @@ def error_get_data_fixture():
 # In this fixture, we are forcing calls to api to raise an Exception. This is useful
 # for exception handling.
 @pytest.fixture(name="error_with_api")
-def error_get_data_fixture():
+def error_with_api_fixture():
     """Simulate error when retrieving data from API."""
     with patch(
         "fronius_solarweb.Fronius_Solarweb.get_pvsystem_meta_data",

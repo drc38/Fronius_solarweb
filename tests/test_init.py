@@ -82,5 +82,5 @@ async def test_setup_entry_exception(hass, error_on_get_data):
     # In this case we are testing the condition where async_setup_entry raises
     # ConfigEntryNotReady using the `error_on_get_data` fixture which simulates
     # an error.
-    with pytest.raises( (ConfigEntryNotReady, UpdateFailed) ):
+    with pytest.raises((ConfigEntryNotReady, UpdateFailed)):
         assert await async_setup_entry(hass, config_entry)
