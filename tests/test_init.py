@@ -37,6 +37,7 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog):
         domain=DOMAIN, data=MOCK_CONFIG_INIT, entry_id="test_setup", title="test_setup"
     )
     # config_entry.add_to_hass(hass)
+    hass.config_entries._entries[config_entry.entry_id] = config_entry
 
     # Set up the entry and assert that the values set during setup are where we expect
     # them to be. Because we have patched the FlowDataUpdateCoordinator.async_get_data
