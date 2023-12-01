@@ -104,7 +104,9 @@ jobs:
           git commit -m "Updated coverage.svg"
 
       - name: Push changes
-        if: steps.changed_files.outputs.files_changed == 'true'
+        if: |
+          steps.changed_files.outputs.files_changed == 'true' &&
+          github.event_name == 'push'
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
