@@ -16,7 +16,7 @@ jobs:
       contents: write
     steps:
       - name: 📥 Checkout the repository
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.2
 
       - name: 🛠️ Set up Python
         uses: actions/setup-python@v5.0.0
@@ -32,7 +32,7 @@ jobs:
           python3 ${{ github.workspace }}/manage/update_manifest.py --version ${{ steps.version.outputs.version }}
 
       - name: 📤 Upload zip to action
-        uses: actions/upload-artifact@v4.0.0
+        uses: actions/upload-artifact@v4.3.1
         if: ${{ github.event_name == 'push' }}
         with:
           name: solarweb
@@ -46,7 +46,7 @@ jobs:
           zip solarweb.zip -r ./
 
       - name: 📤 Upload zip to release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: ${{ github.event_name == 'release' }}
         with:
           files: ${{ github.workspace }}/custom_components/solarweb/solarweb.zip
