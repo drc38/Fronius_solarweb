@@ -46,12 +46,36 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             return await self._show_config_form(user_input)
 
     async def _show_config_form(self, user_input):
-        """Show the configuration form to edit location data."""
+        """Show the configuration form to edit data."""
         return self.async_show_form(
             step_id="user",
             data_schema=vol.Schema(
                 {
                     vol.Required(CONF_PV_ID): str,
+                    vol.Required(CONF_ACCESSKEY_ID): str,
+                    vol.Required(CONF_ACCESSKEY_VALUE): str,
+                }
+            ),
+            errors=self._errors,
+        )
+
+    async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None):
+        """Add reconfigure step to allow to reconfigure a config entry."""
+        if user_input is not None:
+            info = await self._validate_input(user_input)
+            if info:
+                return self.async_update_entry(title=info["title"], data=user_input)
+            else:
+                self._errors["base"] = "auth"
+
+        return await self._show_reconfig_form(user_input)
+
+    async def _show_reconfig_form(self, user_input):
+        """Show the reconfiguration form to edit data."""
+        return self.async_show_form(
+            step_id="reconfigure",
+            data_schema=vol.Schema(
+                {
                     vol.Required(CONF_ACCESSKEY_ID): str,
                     vol.Required(CONF_ACCESSKEY_VALUE): str,
                 }
