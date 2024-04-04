@@ -10,24 +10,12 @@ repos:
       - id: trailing-whitespace
   - repo: local
     hooks:
-      - id: black
-        name: black
-        entry: black
+      - id: ruff
+        name: ruff
+        entry: ruff
         language: system
         types: [python]
-        require_serial: true
-      - id: flake8
-        name: flake8
-        entry: flake8
-        language: system
-        types: [python]
-        require_serial: true
-      - id: reorder-python-imports
-        name: Reorder python imports
-        entry: reorder-python-imports
-        language: system
-        types: [python]
-        args: [--application-directories=custom_components]
+        args: [--fix]
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.2.1
     hooks:
