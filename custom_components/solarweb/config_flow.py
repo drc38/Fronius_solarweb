@@ -45,10 +45,10 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         else:
             return await self._show_config_form(user_input)
 
-    async def _show_config_form(self, user_input):
-        """Show the configuration form to edit location data."""
+    async def _show_config_form(self, user_input, id="user"):
+        """Show the configuration form to edit data."""
         return self.async_show_form(
-            step_id="user",
+            step_id=id,
             data_schema=vol.Schema(
                 {
                     vol.Required(CONF_PV_ID): str,
@@ -58,6 +58,22 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             ),
             errors=self._errors,
         )
+
+    async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None):
+        """Add reconfigure step to allow to reconfigure a config entry."""
+        entry = self.hass.config_entries.async_get_entry(self.context["entry_id"])
+        assert entry
+
+        if user_input is not None:
+            info = await self._validate_input(user_input)
+            if info:
+                return self.async_update_reload_and_abort(
+                    entry, data=user_input, reason="reconfigure_successful"
+                )
+            else:
+                self._errors["base"] = "auth"
+
+        return await self._show_config_form(user_input, id="reconfigure")
 
     async def _validate_input(self, data: dict[str, Any]) -> dict[str, Any]:
         """Validate the user input allows us to connect.
