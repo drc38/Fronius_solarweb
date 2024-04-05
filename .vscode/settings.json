@@ -1,7 +1,9 @@
 {
-  "python.pythonPath": "venv/bin/python",
+  "python.linting.pylintEnabled": true,
+  "python.linting.enabled": true,
+  "python.pythonPath": "/usr/local/bin/python",
+  "python.analysis.extraPaths": ["/usr/local/lib/python3.9/site-packages"],
   "files.associations": {
     "*.yaml": "home-assistant"
-  },
-  "editor.defaultFormatter": "ms-python.black-formatter"
+  }
 }
