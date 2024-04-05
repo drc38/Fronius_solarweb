@@ -73,7 +73,7 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             else:
                 self._errors["base"] = "auth"
 
-        return await self._show_config_form(user_input, id="reconfigure")
+        return await self._show_config_form(user_input)
 
     async def _validate_input(self, data: dict[str, Any]) -> dict[str, Any]:
         """Validate the user input allows us to connect.

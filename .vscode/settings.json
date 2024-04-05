@@ -1,6 +1,5 @@
 {
-  "python.pythonPath": "/usr/local/bin/python",
-  "python.analysis.extraPaths": ["/usr/local/lib/python3.9/site-packages"],
+  "python.pythonPath": "venv/bin/python",
   "files.associations": {
     "*.yaml": "home-assistant"
   }
