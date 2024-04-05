@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+# Create build dir if not present
+if [[ ! -d "${PWD}/build" ]]; then
+    mkdir -p "${PWD}/build"
+    hass --config "${PWD}/build" --script ensure_config
+fi
+
+# Create custom components dir if not present
+if [[ ! -d "${PWD}/build/custom_components" ]]; then
+    mkdir -p "${PWD}/build/custom_components"
+    hass --config "${PWD}/build" --script ensure_config
+fi
+
+# copy the integration
+rm -rf $PWD/build/custom_components/solarweb
+cp -r -l $PWD/custom_components/solarweb $PWD/build/custom_components/
+
+# Start Home Assistant
+hass --config "${PWD}/build" --debug

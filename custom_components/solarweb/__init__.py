@@ -1,5 +1,4 @@
-"""
-Custom integration to integrate solarweb with Home Assistant.
+"""Custom integration to integrate solarweb with Home Assistant.
 
 For more details about this integration, please refer to
 https://github.com/drc38/Fronius_solarweb
