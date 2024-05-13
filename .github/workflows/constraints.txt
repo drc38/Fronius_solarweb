@@ -1,5 +1,5 @@
 pip>=8.0.3,<24.1
-pre-commit==3.7.0
+pre-commit==3.7.1
 bandit==1.7.8
 ruff==0.3.5
 pre-comit-hooks==4.1.0
