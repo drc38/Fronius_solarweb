@@ -14,7 +14,7 @@ repos:
         entry: ruff
         language: system
         types: [python]
-        args: [--fix]
+        args: [check --fix]
   - repo: https://github.com/pre-commit/mirrors-prettier
     rev: v2.2.1
     hooks:
