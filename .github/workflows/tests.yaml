@@ -31,7 +31,7 @@ jobs:
 
       - name: Install Python modules
         run: |
-          pip install --constraint=.github/workflows/constraints.txt pre-commit ruff
+          pip install --constraint=.github/workflows/constraints.txt pre-commit ruff check
 
       - name: Run pre-commit on all files
         run: |
