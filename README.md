@@ -49,7 +49,7 @@ Configuration of the integration is done within the Integrations Panel in Home A
 1. Navigate to Integrations
 1. Click _Add Integration_
 1. Search for Fronius Solar.Web
-1. Enter your PV System ID and API details from your [Solar.Web](https://www.solarweb.com/) account *note that you need to contact Fronius support to obtain these details and they may not provide them as it's intended for commercial installers only.
+1. Enter your PV System ID and API details from your [Solar.Web](https://www.solarweb.com/) account \*note that you need to contact Fronius support to obtain these details and they may not provide them as it's intended for commercial installers only.
 
 If you have an issue ensure the api is working at [official test site](https://api.solarweb.com/swqapi/index.html)
 
