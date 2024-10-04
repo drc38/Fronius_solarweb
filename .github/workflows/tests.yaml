@@ -26,14 +26,18 @@ jobs:
 
       - name: Upgrade pip
         run: |
-          pip install --constraint=.github/workflows/constraints.txt pip
+          python -m venv venv
+          . venv/bin/activate
+          pip install "$(grep '^uv' < requirements_dev.txt)"
           pip --version
 
       - name: Install Python modules
         run: |
-          pip install --constraint=.github/workflows/constraints.txt pre-commit ruff
+          . venv/bin/activate
+          uv pip install "$(grep '^pre-commit' < requirements_dev.txt)"
       - name: Run pre-commit on all files
         run: |
+          . venv/bin/activate
           pre-commit run --all-files --show-diff-on-failure --color=always
 
   hacs:
@@ -73,10 +77,13 @@ jobs:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Install requirements
         run: |
-          pip install --constraint=.github/workflows/constraints.txt pip
-          pip install -r requirements_test.txt
+          python -m venv venv
+          . venv/bin/activate
+          pip install "$(grep '^uv' < requirements_dev.txt)"
+          uv pip install -r requirements_test.txt
       - name: Tests suite
         run: |
+          . venv/bin/activate
           pytest \
             --timeout=15 \
             --durations=10 \
