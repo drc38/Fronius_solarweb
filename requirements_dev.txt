@@ -1,3 +1,4 @@
 homeassistant>=2024.6
 fronius_solarweb==0.3.0
 pre-commit==3.7.1
+uv>=0.4
