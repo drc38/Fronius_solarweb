@@ -34,7 +34,7 @@ jobs:
       - name: Install Python modules
         run: |
           . venv/bin/activate
-          uv pip install ruff
+          uv pip install -r requirements_dev.txt
       - name: Run pre-commit on all files
         run: |
           . venv/bin/activate
@@ -79,6 +79,7 @@ jobs:
         run: |
           python -m venv venv
           . venv/bin/activate
+          pip install "$(grep '^uv' < requirements_dev.txt)"
           uv pip install -r requirements_test.txt
       - name: Tests suite
         run: |
