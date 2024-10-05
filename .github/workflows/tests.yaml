@@ -77,10 +77,8 @@ jobs:
           python-version: ${{ env.DEFAULT_PYTHON }}
       - name: Install requirements
         run: |
-          python -m venv venv
-          . venv/bin/activate
           pip install "$(grep '^uv' < requirements_dev.txt)"
-          uv pip install -r requirements_test.txt
+          uv pip install -r requirements_test.txt --overide overrides.txt --system
       - name: Tests suite
         run: |
           . venv/bin/activate
