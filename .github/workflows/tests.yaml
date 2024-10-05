@@ -81,7 +81,6 @@ jobs:
           uv pip install -r requirements_test.txt --override overrides.txt --system --prerelease=allow
       - name: Tests suite
         run: |
-          . venv/bin/activate
           pytest \
             --timeout=15 \
             --durations=10 \
