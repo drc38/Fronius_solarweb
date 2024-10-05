@@ -78,7 +78,7 @@ jobs:
       - name: Install requirements
         run: |
           pip install "$(grep '^uv' < requirements_dev.txt)"
-          uv pip install -r requirements_test.txt --override overrides.txt --system
+          uv pip install -r requirements_test.txt --override overrides.txt --system --prerelease=allow
       - name: Tests suite
         run: |
           . venv/bin/activate
