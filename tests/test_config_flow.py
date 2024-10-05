@@ -1,4 +1,4 @@
-"""Test solarweb_Powersensor config flow."""
+"""Test solarweb config flow."""
 from unittest.mock import patch
 
 import pytest
