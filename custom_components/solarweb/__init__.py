@@ -3,40 +3,40 @@
 For more details about this integration, please refer to
 https://github.com/drc38/Fronius_solarweb
 """
+
 import logging
 from datetime import timedelta
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from fronius_solarweb import Fronius_Solarweb
-from fronius_solarweb.schema.pvsystem import PvSystemAggrDataV2
-from fronius_solarweb.schema.pvsystem import PvSystemFlowData
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import Config
-from homeassistant.core import HomeAssistant
+from homeassistant.core import Config, HomeAssistant
 from homeassistant.helpers.httpx_client import get_async_client
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-from homeassistant.helpers.update_coordinator import UpdateFailed
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from .const import CONF_ACCESSKEY_ID
-from .const import CONF_ACCESSKEY_VALUE
-from .const import CONF_PV_ID
-from .const import DOMAIN
-from .const import PLATFORMS
-from .const import STARTUP_MESSAGE
+from .const import (
+    CONF_ACCESSKEY_ID,
+    CONF_ACCESSKEY_VALUE,
+    CONF_PV_ID,
+    DOMAIN,
+    PLATFORMS,
+    STARTUP_MESSAGE,
+)
+
+if TYPE_CHECKING:
+    from fronius_solarweb.schema.pvsystem import PvSystemAggrDataV2, PvSystemFlowData
 
 SCAN_INTERVAL = timedelta(minutes=5)
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 
-async def async_setup(
-    hass: HomeAssistant, config: Config
-):  # pylint: disable=unused-argument
+async def async_setup(hass: HomeAssistant, config: Config) -> bool:  # pylint: disable=unused-argument
     """Set up this integration using YAML is not supported."""
     return True
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up this integration using UI."""
     if hass.data.get(DOMAIN) is None:
         hass.data.setdefault(DOMAIN, {})
@@ -117,7 +117,7 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
 
             return await async_process_data(data)
         except Exception as exception:
-            raise UpdateFailed() from exception
+            raise UpdateFailed from exception
 
 
 class AggrDataUpdateCoordinator(DataUpdateCoordinator):
@@ -148,12 +148,11 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
 
             return await async_process_data(data)
         except Exception as exception:
-            raise UpdateFailed() from exception
+            raise UpdateFailed from exception
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""
-
     # Not sure why needed but prevents lingering timers from DataUpdateCoordinator
     for coord in hass.data[DOMAIN][entry.entry_id]:
         await coord.async_shutdown()

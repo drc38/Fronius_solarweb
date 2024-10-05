@@ -1,17 +1,14 @@
 """Sensor platform for solarweb."""
+
 from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
 
-from homeassistant.components.sensor import SensorEntity
-from homeassistant.components.sensor import SensorEntityDescription
+from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
 
-from .const import CHANNEL_HA_MAP
-from .const import CONF_PV_ID
-from .const import DOMAIN
+from .const import CHANNEL_HA_MAP, CONF_PV_ID, DOMAIN
 from .entity import SolarWebEntity
-
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -21,13 +18,13 @@ class SolarWebSensorDescription(SensorEntityDescription):
     """Class to describe a Sensor entity."""
 
 
-async def async_setup_entry(hass, entry, async_add_devices):
-    """Setup sensor platform."""
+async def async_setup_entry(hass, entry, async_add_devices) -> None:
+    """Do setup of the sensor."""
     coordinators = hass.data[DOMAIN][entry.entry_id]
     # _LOGGER.debug(coordinator.data)
     for coordinator in coordinators:
         if coordinator.data.get("data") is not None:
-            for k, v in coordinator.data["data"]["sensors"].items():
+            for v in coordinator.data["data"]["sensors"].values():
                 desc = SolarWebSensorDescription(
                     key=".".join([entry.title, v["channelName"]]),
                     name=v["channelName"],
@@ -43,7 +40,8 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
 
     def __init__(
         self, coordinator, config_entry, description: SolarWebSensorDescription
-    ):
+    ) -> None:
+        """Init sensor."""
         super().__init__(coordinator, config_entry, description)
         self._config = config_entry
         self.entity_description = description
@@ -73,8 +71,7 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
         if value in CHANNEL_HA_MAP:
             return CHANNEL_HA_MAP.get(value).get("precision")
-        else:
-            return None
+        return None
 
     @property
     def state_class(self):
@@ -82,8 +79,7 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
         if value in CHANNEL_HA_MAP:
             return CHANNEL_HA_MAP.get(value).get("state")
-        else:
-            return None
+        return None
 
     @property
     def device_class(self):
@@ -91,8 +87,7 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
         if value in CHANNEL_HA_MAP:
             return CHANNEL_HA_MAP.get(value).get("device")
-        else:
-            return None
+        return None
 
     @property
     def icon(self):
@@ -100,5 +95,4 @@ class SolarWebSensor(SolarWebEntity, SensorEntity):
         value = self.coordinator.data["data"]["sensors"][self._attr_name]["channelType"]
         if value in CHANNEL_HA_MAP:
             return CHANNEL_HA_MAP.get(value).get("icon")
-        else:
-            return None
+        return None

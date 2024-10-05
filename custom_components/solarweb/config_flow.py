@@ -1,17 +1,14 @@
 """Adds config flow for solarweb."""
+
 import logging
 from typing import Any
 
 import voluptuous as vol
 from fronius_solarweb import Fronius_Solarweb
-from fronius_solarweb.errors import NotAuthorizedException
-from fronius_solarweb.errors import NotFoundException
+from fronius_solarweb.errors import NotAuthorizedException, NotFoundException
 from homeassistant import config_entries
 
-from .const import CONF_ACCESSKEY_ID
-from .const import CONF_ACCESSKEY_VALUE
-from .const import CONF_PV_ID
-from .const import DOMAIN
+from .const import CONF_ACCESSKEY_ID, CONF_ACCESSKEY_VALUE, CONF_PV_ID, DOMAIN
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -22,7 +19,7 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
     CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize."""
         self._errors = {}
 
@@ -38,12 +35,10 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             info = await self._validate_input(user_input)
             if info:
                 return self.async_create_entry(title=info["title"], data=user_input)
-            else:
-                self._errors["base"] = "auth"
+            self._errors["base"] = "auth"
 
             return await self._show_config_form(user_input)
-        else:
-            return await self._show_config_form(user_input)
+        return await self._show_config_form(user_input)
 
     async def _show_config_form(self, user_input, id="user"):
         """Show the configuration form to edit data."""
@@ -70,15 +65,16 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_update_reload_and_abort(
                     entry, data=user_input, reason="reconfigure_successful"
                 )
-            else:
-                self._errors["base"] = "auth"
+            self._errors["base"] = "auth"
 
         return await self._show_config_form(user_input)
 
     async def _validate_input(self, data: dict[str, Any]) -> dict[str, Any]:
         """Validate the user input allows us to connect.
+
         Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
         """
+
         try:
             client = Fronius_Solarweb(
                 data[CONF_ACCESSKEY_ID], data[CONF_ACCESSKEY_VALUE], data[CONF_PV_ID]

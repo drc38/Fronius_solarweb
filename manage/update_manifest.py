@@ -1,11 +1,12 @@
 """Update the manifest file."""
+
 # https://github.com/hacs/integration/blob/main/manage/update_manifest.py
 import json
 import os
 import sys
 
 
-def update_manifest():
+def update_manifest() -> None:
     """Update the manifest file."""
     version = "0.0.0"
     for index, value in enumerate(sys.argv):
