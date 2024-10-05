@@ -1,17 +1,17 @@
 """Global fixtures for solarweb integration."""
+
 from unittest.mock import patch
 
 import pytest
 import pytest_asyncio
 from fronius_solarweb.errors import NotAuthorizedException
-from fronius_solarweb.schema.pvsystem import PvSystemAggrDataV2
-from fronius_solarweb.schema.pvsystem import PvSystemFlowData
-from fronius_solarweb.schema.pvsystem import PvSystemMetaData
+from fronius_solarweb.schema.pvsystem import (
+    PvSystemAggrDataV2,
+    PvSystemFlowData,
+    PvSystemMetaData,
+)
 
-from .const import PV_AGGR_DATA
-from .const import PV_FLOW_DATA
-from .const import PV_SYS_DATA
-
+from .const import PV_AGGR_DATA, PV_FLOW_DATA, PV_SYS_DATA
 
 pytest_plugins = "pytest_homeassistant_custom_component"
 
@@ -21,9 +21,9 @@ raw_aggr_data = PvSystemAggrDataV2(**PV_AGGR_DATA)
 
 
 @pytest.fixture(autouse=True)
-def auto_enable_custom_integrations(enable_custom_integrations):
+def auto_enable_custom_integrations(enable_custom_integrations) -> None:
     """Enable custom integrations defined in the test dir."""
-    yield
+    return
 
 
 # This fixture is used to prevent HomeAssistant from attempting to create and dismiss persistent
@@ -32,8 +32,9 @@ def auto_enable_custom_integrations(enable_custom_integrations):
 @pytest.fixture(name="skip_notifications", autouse=True)
 def skip_notifications_fixture():
     """Skip notification calls."""
-    with patch("homeassistant.components.persistent_notification.async_create"), patch(
-        "homeassistant.components.persistent_notification.async_dismiss"
+    with (
+        patch("homeassistant.components.persistent_notification.async_create"),
+        patch("homeassistant.components.persistent_notification.async_dismiss"),
     ):
         yield
 
@@ -43,15 +44,19 @@ def skip_notifications_fixture():
 @pytest_asyncio.fixture(name="bypass_get_data")
 async def bypass_get_data_fixture():
     """Skip calls to get data from API."""
-    with patch(
-        "fronius_solarweb.Fronius_Solarweb.get_system_flow_data",
-        return_value=raw_flow_data,
-    ), patch(
-        "fronius_solarweb.Fronius_Solarweb.get_system_aggr_data_v2",
-        return_value=raw_aggr_data,
-    ), patch(
-        "fronius_solarweb.Fronius_Solarweb.get_pvsystem_meta_data",
-        return_value=sys_data,
+    with (
+        patch(
+            "fronius_solarweb.Fronius_Solarweb.get_system_flow_data",
+            return_value=raw_flow_data,
+        ),
+        patch(
+            "fronius_solarweb.Fronius_Solarweb.get_system_aggr_data_v2",
+            return_value=raw_aggr_data,
+        ),
+        patch(
+            "fronius_solarweb.Fronius_Solarweb.get_pvsystem_meta_data",
+            return_value=sys_data,
+        ),
     ):
         yield
 
@@ -61,12 +66,15 @@ async def bypass_get_data_fixture():
 @pytest.fixture(name="error_on_get_data")
 def error_get_data_fixture():
     """Simulate error when retrieving data from API."""
-    with patch(
-        "fronius_solarweb.Fronius_Solarweb.get_system_flow_data",
-        side_effect=Exception,
-    ), patch(
-        "fronius_solarweb.Fronius_Solarweb.get_system_aggr_data_v2",
-        side_effect=Exception,
+    with (
+        patch(
+            "fronius_solarweb.Fronius_Solarweb.get_system_flow_data",
+            side_effect=Exception,
+        ),
+        patch(
+            "fronius_solarweb.Fronius_Solarweb.get_system_aggr_data_v2",
+            side_effect=Exception,
+        ),
     ):
         yield
 

@@ -127,3 +127,14 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# misc
+.coverage
+.vscode
+coverage.xml
+.ruff_cache
+
+
+# Home Assistant configuration
+config/*
+!config/configuration.yaml
