@@ -75,7 +75,7 @@ async def async_process_data(data) -> dict[str, Any]:
     # Alter Data Channels structure to simplify sensor usage
     # from "channels": [{data}, {data}...] to
     # "sensors":{channel1: {data}, channel2: {data}..}
-    sens = data.dict()
+    sens = data.model_dump()
     _LOGGER.debug(f"Data converted to dict: {sens}")
     if isinstance(sens["data"], list):
         sens["data"] = sens["data"][0]
