@@ -40,7 +40,7 @@ async def test_successful_config_flow(hass, bypass_get_data) -> None:
     )
 
     # Check that the config flow shows the user form as the first step
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "user"
 
     # If a user were to enter form it would result in this function call
@@ -50,7 +50,7 @@ async def test_successful_config_flow(hass, bypass_get_data) -> None:
 
     # Check that the config flow is complete and a new entry is created with
     # the input data
-    assert result["type"] == data_entry_flow.RESULT_TYPE_CREATE_ENTRY
+    assert result["type"] == data_entry_flow.FlowResultType.CREATE_ENTRY
     assert result["title"] == PV_SYS_DATA["name"]
     assert result["data"] == MOCK_CONFIG
     assert result["result"]
@@ -66,12 +66,12 @@ async def test_failed_config_flow(hass, error_with_api) -> None:
         DOMAIN, context={"source": config_entries.SOURCE_USER}
     )
 
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["step_id"] == "user"
 
     result = await hass.config_entries.flow.async_configure(
         result["flow_id"], user_input=MOCK_CONFIG
     )
 
-    assert result["type"] == data_entry_flow.RESULT_TYPE_FORM
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
     assert result["errors"] == {"base": "auth"}
