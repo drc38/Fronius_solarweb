@@ -11,6 +11,7 @@ from datetime import timedelta
 from typing import TYPE_CHECKING, Any
 
 from fronius_solarweb import Fronius_Solarweb
+from fronius_solarweb.errors import NotAuthorizedException
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
@@ -180,7 +181,7 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER.debug(f"Flow data polled: {data}")
 
             return await async_process_data(data)
-        except Fronius_Solarweb.errors.NotAuthorizedException:
+        except NotAuthorizedException:
             raise
         except Exception as exception:
             raise UpdateFailed from exception
@@ -221,7 +222,7 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER.debug(f"Aggregated data polled: {data}")
 
             return await async_process_data(data)
-        except Fronius_Solarweb.errors.NotAuthorizedException:
+        except NotAuthorizedException:
             raise
         except Exception as exception:
             raise UpdateFailed from exception
