@@ -8,7 +8,18 @@ from fronius_solarweb import Fronius_Solarweb
 from fronius_solarweb.errors import NotAuthorizedException, NotFoundException
 from homeassistant import config_entries
 
-from .const import CONF_ACCESSKEY_ID, CONF_ACCESSKEY_VALUE, CONF_PV_ID, DOMAIN
+from . import save_token
+
+from .const import (
+    CONF_ACCESSKEY_ID,
+    CONF_ACCESSKEY_VALUE,
+    CONF_LOGIN_NAME,
+    CONF_LOGIN_PASSWORD,
+    CONF_PV_ID,
+    DEFAULT_ACCESSKEY_ID,
+    DEFAULT_ACCESSKEY_VALUE,
+    DOMAIN,
+)
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -47,8 +58,10 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema(
                 {
                     vol.Required(CONF_PV_ID): str,
-                    vol.Required(CONF_ACCESSKEY_ID): str,
-                    vol.Required(CONF_ACCESSKEY_VALUE): str,
+                    vol.Required(CONF_ACCESSKEY_ID, DEFAULT_ACCESSKEY_ID): str,
+                    vol.Required(CONF_ACCESSKEY_VALUE, DEFAULT_ACCESSKEY_VALUE): str,
+                    vol.Optional(CONF_LOGIN_NAME, None): str,
+                    vol.Optional(CONF_LOGIN_PASSWORD, None): str,
                 }
             ),
             errors=self._errors,
@@ -77,8 +90,18 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
         try:
             client = Fronius_Solarweb(
-                data[CONF_ACCESSKEY_ID], data[CONF_ACCESSKEY_VALUE], data[CONF_PV_ID]
+                access_key_id=data[CONF_ACCESSKEY_ID],
+                access_key_value=data[CONF_ACCESSKEY_VALUE],
+                pv_system_id=data[CONF_PV_ID],
+                login_name=data.get(CONF_LOGIN_NAME),
+                login_password=data.get(CONF_LOGIN_PASSWORD),
             )
+
+            if data.get(CONF_LOGIN_PASSWORD):
+                await client.login()
+                await self.hass.async_add_executor_job(
+                    save_token, self.hass, client.jwt_data
+                )
 
             system_data = await client.get_pvsystem_meta_data()
             _LOGGER.info("Retrieved PV system data from cloud API")

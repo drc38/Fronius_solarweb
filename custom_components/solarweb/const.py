@@ -18,7 +18,15 @@ PLATFORMS = [SENSOR]
 CONF_ENABLED = "disabled"
 CONF_ACCESSKEY_ID = "accesskeyid"
 CONF_ACCESSKEY_VALUE = "accesskeyvalue"
+CONF_LOGIN_NAME = "login"
+CONF_LOGIN_PASSWORD = "password"
 CONF_PV_ID = "pvid"
+DEFAULT_ACCESSKEY_ID = "FKIAB4CDA71C0763413DA942DC756742318B"
+DEFAULT_ACCESSKEY_VALUE = "67315e19-6805-479e-994d-7193ee5f6125"
+TOKEN_FILE_NAME = "fronius_solarweb.jwt"
+TOKEN = "jwtToken"
+TOKEN_REFRESH = "refreshToken"
+TOKEN_EXPIRATION = "jwtTokenExpiration"
 
 # Channel types to HA details ie device class, state class, precision, icon)
 CHANNEL_HA_MAP = {
