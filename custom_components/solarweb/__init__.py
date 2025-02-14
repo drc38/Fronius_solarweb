@@ -145,6 +145,7 @@ async def async_process_data(data) -> dict[str, Any]:
     _LOGGER.debug(f"New data structure: {sens}")
     return sens
 
+
 async def aysnc_check_expiry(hass, client) -> None:
     """Check token expiry and refresh if required."""
     expires = client.jwt_data.get(TOKEN_EXPIRATION)
@@ -154,6 +155,7 @@ async def aysnc_check_expiry(hass, client) -> None:
             await client.refresh_token()
             await hass.async_add_executor_job(save_token, hass, client.jwt_data)
             _LOGGER.debug(f"Token new expiry: {client.jwt_data.get(TOKEN_EXPIRATION)}")
+
 
 class FlowDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
