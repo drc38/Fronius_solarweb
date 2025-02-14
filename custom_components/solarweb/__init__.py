@@ -146,7 +146,7 @@ async def async_process_data(data) -> dict[str, Any]:
     return sens
 
 
-async def aysnc_check_expiry(hass, client) -> None:
+async def aysnc_check_expiry(hass: HomeAssistant, client: Fronius_Solarweb) -> None:
     """Check token expiry and refresh if required."""
     expires = client.jwt_data.get(TOKEN_EXPIRATION)
     if expires:
@@ -168,7 +168,6 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
         """Initialize."""
         self.api = client
         self.platforms = []
-        self.expires = client.jwt_data.get(TOKEN_EXPIRATION)
 
         super().__init__(
             hass,
