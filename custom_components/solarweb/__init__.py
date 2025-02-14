@@ -218,6 +218,8 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
                     await self.hass.async_add_executor_job(
                         save_token, self.hass, self.api.jwt_data
                     )
+                    self.expires = client.jwt_data.get(TOKEN_EXPIRATION)
+                    _LOGGER.debug(f"Token new expiration: {self.expires}")
             data: PvSystemAggrDataV2 = await self.api.get_system_aggr_data_v2()
             _LOGGER.debug(f"Aggregated data polled: {data}")
 
