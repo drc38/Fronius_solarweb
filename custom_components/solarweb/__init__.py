@@ -146,6 +146,17 @@ async def async_process_data(data) -> dict[str, Any]:
     return sens
 
 
+async def aysnc_check_expiry(hass: HomeAssistant, client: Fronius_Solarweb) -> None:
+    """Check token expiry and refresh if required."""
+    expires = client.jwt_data.get(TOKEN_EXPIRATION)
+    if expires:
+        if dt_util.parse_datetime(expires) < dt_util.as_utc(dt_util.now()):
+            _LOGGER.debug(f"Token expired on: {expires}, refreshing")
+            await client.refresh_token()
+            await hass.async_add_executor_job(save_token, hass, client.jwt_data)
+            _LOGGER.debug(f"Token new expiry: {client.jwt_data.get(TOKEN_EXPIRATION)}")
+
+
 class FlowDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
 
@@ -157,7 +168,6 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
         """Initialize."""
         self.api = client
         self.platforms = []
-        self.expires = client.jwt_data.get(TOKEN_EXPIRATION)
 
         super().__init__(
             hass,
@@ -170,15 +180,7 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
     async def async_update_data(self):
         """Update data via library."""
         try:
-            if self.expires:
-                if dt_util.parse_datetime(self.expires) < dt_util.as_utc(dt_util.now()):
-                    _LOGGER.debug(f"Token expired on: {self.expires}, refreshing")
-                    await self.api.refresh_token()
-                    await self.hass.async_add_executor_job(
-                        save_token, self.hass, self.api.jwt_data
-                    )
-                    self.expires = self.api.jwt_data.get(TOKEN_EXPIRATION)
-                    _LOGGER.debug(f"Token new expiration: {self.expires}")
+            await aysnc_check_expiry(self.hass, self.api)
             data: PvSystemFlowData = await self.api.get_system_flow_data()
             _LOGGER.debug(f"Flow data polled: {data}")
 
@@ -200,7 +202,6 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
         """Initialize."""
         self.api = client
         self.platforms = []
-        self.expires = client.jwt_data.get(TOKEN_EXPIRATION)
 
         super().__init__(
             hass,
@@ -213,15 +214,7 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
     async def async_update_data(self):
         """Update data via library."""
         try:
-            if self.expires:
-                if dt_util.parse_datetime(self.expires) < dt_util.as_utc(dt_util.now()):
-                    _LOGGER.debug(f"Token expired on: {self.expires}, refreshing")
-                    await self.api.refresh_token()
-                    await self.hass.async_add_executor_job(
-                        save_token, self.hass, self.api.jwt_data
-                    )
-                    self.expires = self.api.jwt_data.get(TOKEN_EXPIRATION)
-                    _LOGGER.debug(f"Token new expiration: {self.expires}")
+            await aysnc_check_expiry(self.hass, self.api)
             data: PvSystemAggrDataV2 = await self.api.get_system_aggr_data_v2()
             _LOGGER.debug(f"Aggregated data polled: {data}")
 
