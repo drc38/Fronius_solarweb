@@ -58,8 +58,10 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             data_schema=vol.Schema(
                 {
                     vol.Required(CONF_PV_ID): str,
-                    vol.Required(CONF_ACCESSKEY_ID, DEFAULT_ACCESSKEY_ID): str,
-                    vol.Required(CONF_ACCESSKEY_VALUE, DEFAULT_ACCESSKEY_VALUE): str,
+                    vol.Required(CONF_ACCESSKEY_ID, default=DEFAULT_ACCESSKEY_ID): str,
+                    vol.Required(
+                        CONF_ACCESSKEY_VALUE, default=DEFAULT_ACCESSKEY_VALUE
+                    ): str,
                     vol.Optional(CONF_LOGIN_NAME, None): str,
                     vol.Optional(CONF_LOGIN_PASSWORD, None): str,
                 }

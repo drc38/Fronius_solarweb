@@ -102,7 +102,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     if login_password:
-        token = await hass.async_add_executor_job(load_token)
+        token = await hass.async_add_executor_job(load_token, hass)
         client.jwt_data = token
         client._jwt_headers = {"Authorization": "Bearer " + client.jwt_data.get(TOKEN)}
 
@@ -171,7 +171,9 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
         """Update data via library."""
         try:
             if self.expires:
-                if dt_util.parse_datetime(self.expires) >= dt_util.now():
+                if dt_util.parse_datetime(self.expires) >= dt_util.as_utc(
+                    dt_util.now()
+                ):
                     _LOGGER.debug(f"Token expired on: {self.expires}, refreshing")
                     await self.api.refresh_token()
                     await self.hass.async_add_executor_job(
@@ -212,7 +214,9 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
         """Update data via library."""
         try:
             if self.expires:
-                if dt_util.parse_datetime(self.expires) >= dt_util.now():
+                if dt_util.parse_datetime(self.expires) >= dt_util.as_utc(
+                    dt_util.now()
+                ):
                     _LOGGER.debug(f"Token expired on: {self.expires}, refreshing")
                     await self.api.refresh_token()
                     await self.hass.async_add_executor_job(
