@@ -110,6 +110,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             await aysnc_check_expiry(hass, client)
         except HTTPStatusError:
             await client.login()
+        await hass.async_add_executor_job(save_token, hass, client.jwt_data)
 
     coordinatorFlow = FlowDataUpdateCoordinator(hass, client=client)
     coordinatorAggr = AggrDataUpdateCoordinator(hass, client=client)
