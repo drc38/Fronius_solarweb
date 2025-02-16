@@ -18,6 +18,7 @@ from homeassistant.helpers.typing import ConfigType
 from homeassistant.helpers.httpx_client import get_async_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
+from httpx import HTTPStatusError
 
 from .const import (
     CONF_ACCESSKEY_ID,
@@ -105,6 +106,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         token = await hass.async_add_executor_job(load_token, hass)
         client.jwt_data = token
         client._jwt_headers = {"Authorization": "Bearer " + client.jwt_data.get(TOKEN)}
+        try:
+            await aysnc_check_expiry(hass, client)
+        except HTTPStatusError:
+            await client.login()
 
     coordinatorFlow = FlowDataUpdateCoordinator(hass, client=client)
     coordinatorAggr = AggrDataUpdateCoordinator(hass, client=client)
