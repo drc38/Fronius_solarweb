@@ -192,10 +192,11 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
         ) + timedelta(minutes=15)
         sunrise = get_astral_event_next(self.hass, "sunrise").replace(
             microsecond=0
-        ) + timedelta(minutes=15)
+        ) - timedelta(minutes=15)
         now = dt_util.now()
         # Pause updates after sunset and before sunrise with 15min buffer
-        if now > sunset and now < sunrise:
+        # Check for no data in case the integration is being setup
+        if (now > sunset and now < sunrise) or self.data is not None:
             return self.data
         try:
             await aysnc_check_expiry(self.hass, self.api)
@@ -236,10 +237,11 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
         ) + timedelta(minutes=15)
         sunrise = get_astral_event_next(self.hass, "sunrise").replace(
             microsecond=0
-        ) + timedelta(minutes=15)
+        ) - timedelta(minutes=15)
         now = dt_util.now()
         # Pause updates after sunset and before sunrise with 15min buffer
-        if now > sunset and now < sunrise:
+        # Check for no data in case the integration is being setup
+        if (now > sunset and now < sunrise) or self.data is not None:
             return self.data
         try:
             await aysnc_check_expiry(self.hass, self.api)
