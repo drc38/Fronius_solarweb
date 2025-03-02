@@ -48,10 +48,10 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 return self.async_create_entry(title=info["title"], data=user_input)
             self._errors["base"] = "auth"
 
-            return await self._show_config_form(user_input)
-        return await self._show_config_form(user_input)
+            return await self._show_config_form()
+        return await self._show_config_form()
 
-    async def _show_config_form(self, user_input, id="user"):
+    async def _show_config_form(self, id="user"):
         """Show the configuration form to edit data."""
         return self.async_show_form(
             step_id=id,
@@ -69,6 +69,29 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors=self._errors,
         )
 
+    async def _show_reconfig_form(self, entry, id="user"):
+        """Show the configuration form to edit data."""
+        return self.async_show_form(
+            step_id=id,
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_PV_ID, default=entry.data.get(CONF_PV_ID)): str,
+                    vol.Required(
+                        CONF_ACCESSKEY_ID, default=entry.data.get(CONF_ACCESSKEY_ID)
+                    ): str,
+                    vol.Required(
+                        CONF_ACCESSKEY_VALUE,
+                        default=entry.data.get(CONF_ACCESSKEY_VALUE),
+                    ): str,
+                    vol.Optional(CONF_LOGIN_NAME, entry.data.get(CONF_LOGIN_NAME)): str,
+                    vol.Optional(
+                        CONF_LOGIN_PASSWORD, entry.data.get(CONF_LOGIN_PASSWORD)
+                    ): str,
+                }
+            ),
+            errors=self._errors,
+        )
+
     async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None):
         """Add reconfigure step to allow to reconfigure a config entry."""
         entry = self.hass.config_entries.async_get_entry(self.context["entry_id"])
@@ -81,8 +104,9 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                     entry, data=user_input, reason="reconfigure_successful"
                 )
             self._errors["base"] = "auth"
+            return await self._show_reconfig_form(entry)
 
-        return await self._show_config_form(user_input)
+        return await self._show_reconfig_form(entry)
 
     async def _validate_input(self, data: dict[str, Any]) -> dict[str, Any]:
         """Validate the user input allows us to connect.
