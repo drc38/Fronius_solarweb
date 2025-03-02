@@ -17,6 +17,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.helpers.httpx_client import get_async_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.sun import get_astral_event_next
 from homeassistant.util import dt as dt_util
 from httpx import HTTPStatusError
 
@@ -134,7 +135,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_process_data(data) -> dict[str, Any]:
-    """Process raw data to simply HA sensor processing."""
+    """Process raw data to simplify HA sensor processing."""
     # Alter Data Channels structure to simplify sensor usage
     # from "channels": [{data}, {data}...] to
     # "sensors":{channel1: {data}, channel2: {data}..}
@@ -186,6 +187,16 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def async_update_data(self):
         """Update data via library."""
+        sunset = get_astral_event_next(self.hass, "sunset").replace(
+            microsecond=0
+        ) + timedelta(minutes=15)
+        sunrise = get_astral_event_next(self.hass, "sunrise").replace(
+            microsecond=0
+        ) + timedelta(minutes=15)
+        now = dt_util.now()
+        # Pause updates after sunset and before sunrise with 15min buffer
+        if now > sunset and now < sunrise:
+            return self.data
         try:
             await aysnc_check_expiry(self.hass, self.api)
             data: PvSystemFlowData = await self.api.get_system_flow_data()
@@ -220,6 +231,16 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def async_update_data(self):
         """Update data via library."""
+        sunset = get_astral_event_next(self.hass, "sunset").replace(
+            microsecond=0
+        ) + timedelta(minutes=15)
+        sunrise = get_astral_event_next(self.hass, "sunrise").replace(
+            microsecond=0
+        ) + timedelta(minutes=15)
+        now = dt_util.now()
+        # Pause updates after sunset and before sunrise with 15min buffer
+        if now > sunset and now < sunrise:
+            return self.data
         try:
             await aysnc_check_expiry(self.hass, self.api)
             data: PvSystemAggrDataV2 = await self.api.get_system_aggr_data_v2()
