@@ -37,7 +37,8 @@ from .const import (
 if TYPE_CHECKING:
     from fronius_solarweb.schema.pvsystem import PvSystemAggrDataV2, PvSystemFlowData
 
-SCAN_INTERVAL = timedelta(minutes=5)
+SCAN_INTERVAL_FLOW = timedelta(minutes=5)
+SCAN_INTERVAL_AGG = timedelta(minutes=15)
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
 
@@ -179,7 +180,7 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name=DOMAIN,
-            update_interval=SCAN_INTERVAL,
+            update_interval=SCAN_INTERVAL_FLOW,
             update_method=self.async_update_data,
         )
 
@@ -213,7 +214,7 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
             hass,
             _LOGGER,
             name=DOMAIN,
-            update_interval=SCAN_INTERVAL,
+            update_interval=SCAN_INTERVAL_AGG,
             update_method=self.async_update_data,
         )
 
