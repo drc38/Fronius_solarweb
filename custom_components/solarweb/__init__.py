@@ -17,7 +17,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.helpers.httpx_client import get_async_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.helpers.sun import get_astral_event_next
+from homeassistant.helpers.sun import get_astral_event_date
 from homeassistant.util import dt as dt_util
 from httpx import HTTPStatusError
 
@@ -51,9 +51,10 @@ def save_token(
     """Save the jwt Token data to file."""
     config_dir = hass.config.config_dir
     file = os.path.join(config_dir, TOKEN_FILE_NAME)
+    flags = os.O_CREAT | os.O_WRONLY | os.O_TRUNC
     _LOGGER.debug(f"Persisting session token to: {file}")
 
-    with open(os.open(file, os.O_CREAT | os.O_WRONLY, 0o600), "w") as spf:
+    with open(os.open(file, flags, 0o600), "w") as spf:
         json.dump(token, spf)
 
 
@@ -187,16 +188,16 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def async_update_data(self):
         """Update data via library."""
-        sunset = get_astral_event_next(self.hass, "sunset").replace(
+        sunset = get_astral_event_date(self.hass, "sunset").replace(
             microsecond=0
         ) + timedelta(minutes=15)
-        sunrise = get_astral_event_next(self.hass, "sunrise").replace(
+        sunrise = get_astral_event_date(self.hass, "sunrise").replace(
             microsecond=0
         ) - timedelta(minutes=15)
         now = dt_util.now()
         # Pause updates after sunset and before sunrise with 15min buffer
         # Check for no data in case the integration is being setup
-        if (now > sunset and now < sunrise) or self.data is not None:
+        if (now > sunset and now < sunrise) and self.data is not None:
             return self.data
         try:
             await aysnc_check_expiry(self.hass, self.api)
@@ -232,10 +233,10 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def async_update_data(self):
         """Update data via library."""
-        sunset = get_astral_event_next(self.hass, "sunset").replace(
+        sunset = get_astral_event_date(self.hass, "sunset").replace(
             microsecond=0
         ) + timedelta(minutes=15)
-        sunrise = get_astral_event_next(self.hass, "sunrise").replace(
+        sunrise = get_astral_event_date(self.hass, "sunrise").replace(
             microsecond=0
         ) - timedelta(minutes=15)
         now = dt_util.now()
