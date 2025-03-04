@@ -17,7 +17,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.helpers.httpx_client import get_async_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.helpers.sun import get_astral_event_date
+from homeassistant.helpers.sun import is_up
 from homeassistant.util import dt as dt_util
 from httpx import HTTPStatusError
 
@@ -188,16 +188,9 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def async_update_data(self):
         """Update data via library."""
-        sunset = get_astral_event_date(self.hass, "sunset").replace(
-            microsecond=0
-        ) + timedelta(minutes=15)
-        sunrise = get_astral_event_date(self.hass, "sunrise").replace(
-            microsecond=0
-        ) - timedelta(minutes=15)
-        now = dt_util.now()
-        # Pause updates after sunset and before sunrise with 15min buffer
+        # Pause updates after sunset and before sunrise
         # Check for no data in case the integration is being setup
-        if (now > sunset and now < sunrise) and self.data is not None:
+        if not is_up(self.hass) and self.data is not None:
             return self.data
         try:
             await aysnc_check_expiry(self.hass, self.api)
@@ -233,16 +226,9 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def async_update_data(self):
         """Update data via library."""
-        sunset = get_astral_event_date(self.hass, "sunset").replace(
-            microsecond=0
-        ) + timedelta(minutes=15)
-        sunrise = get_astral_event_date(self.hass, "sunrise").replace(
-            microsecond=0
-        ) - timedelta(minutes=15)
-        now = dt_util.now()
-        # Pause updates after sunset and before sunrise with 15min buffer
+        # Pause updates after sunset and before sunrise
         # Check for no data in case the integration is being setup
-        if (now > sunset and now < sunrise) or self.data is not None:
+        if not is_up(self.hass) and self.data is not None:
             return self.data
         try:
             await aysnc_check_expiry(self.hass, self.api)
