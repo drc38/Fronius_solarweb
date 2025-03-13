@@ -1,5 +1,5 @@
 homeassistant>=2024.6
 fronius_solarweb==0.4.3
 pre-commit==4.1.0
-ruff==0.9.9
+ruff==0.9.10
 uv>=0.4
