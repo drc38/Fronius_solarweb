@@ -69,7 +69,7 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
             errors=self._errors,
         )
 
-    async def _show_reconfig_form(self, entry, id="user"):
+    async def _show_reconfig_form(self, entry, id="reconfigure"):
         """Show the configuration form to edit data."""
         return self.async_show_form(
             step_id=id,
