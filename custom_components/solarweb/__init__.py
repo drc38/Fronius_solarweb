@@ -46,11 +46,13 @@ _LOGGER: logging.Logger = logging.getLogger(__package__)
 
 def save_token(
     hass: HomeAssistant,
+    name: str,
     token: dict = None,
 ) -> None:
     """Save the jwt Token data to file."""
     config_dir = hass.config.config_dir
-    file = os.path.join(config_dir, TOKEN_FILE_NAME)
+    filename = name.replace(" ", "_") + "_" + TOKEN_FILE_NAME
+    file = os.path.join(config_dir, filename)
     flags = os.O_CREAT | os.O_WRONLY | os.O_TRUNC
     _LOGGER.debug(f"Persisting session token to: {file}")
 
@@ -60,10 +62,12 @@ def save_token(
 
 def load_token(
     hass: HomeAssistant,
+    name: str,
 ) -> dict[str, str] | None:
     """Load the jwt Token data from file."""
     config_dir = hass.config.config_dir
-    file = os.path.join(config_dir, TOKEN_FILE_NAME)
+    filename = name.replace(" ", "_") + "_" + TOKEN_FILE_NAME
+    file = os.path.join(config_dir, filename)
     _LOGGER.debug(f"Reading session token from: {file}")
 
     if os.path.isfile(file):
@@ -106,17 +110,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     )
 
     if login_password:
-        token = await hass.async_add_executor_job(load_token, hass)
+        token = await hass.async_add_executor_job(load_token, hass, entry.title)
         client.jwt_data = token
         client._jwt_headers = {"Authorization": "Bearer " + client.jwt_data.get(TOKEN)}
         try:
             await aysnc_check_expiry(hass, client)
         except HTTPStatusError:
             await client.login()
-        await hass.async_add_executor_job(save_token, hass, client.jwt_data)
+        await hass.async_add_executor_job(
+            save_token, hass, entry.title, client.jwt_data
+        )
 
-    coordinatorFlow = FlowDataUpdateCoordinator(hass, client=client)
-    coordinatorAggr = AggrDataUpdateCoordinator(hass, client=client)
+    coordinatorFlow = FlowDataUpdateCoordinator(hass, client=client, name=entry.title)
+    coordinatorAggr = AggrDataUpdateCoordinator(hass, client=client, name=entry.title)
 
     coordinators = [coordinatorFlow, coordinatorAggr]
 
@@ -155,14 +161,16 @@ async def async_process_data(data) -> dict[str, Any]:
     return sens
 
 
-async def aysnc_check_expiry(hass: HomeAssistant, client: Fronius_Solarweb) -> None:
+async def aysnc_check_expiry(
+    hass: HomeAssistant, client: Fronius_Solarweb, name: str
+) -> None:
     """Check token expiry and refresh if required."""
     expires = client.jwt_data.get(TOKEN_EXPIRATION)
     if expires:
         if dt_util.parse_datetime(expires) < dt_util.as_utc(dt_util.now()):
             _LOGGER.debug(f"Token expired on: {expires}, refreshing")
             await client.refresh_token()
-            await hass.async_add_executor_job(save_token, hass, client.jwt_data)
+            await hass.async_add_executor_job(save_token, hass, name, client.jwt_data)
             _LOGGER.debug(f"Token new expiry: {client.jwt_data.get(TOKEN_EXPIRATION)}")
 
 
@@ -173,6 +181,7 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
         self,
         hass: HomeAssistant,
         client: Fronius_Solarweb,
+        name: str,
     ) -> None:
         """Initialize."""
         self.api = client
@@ -193,7 +202,7 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
         if not is_up(self.hass) and self.data is not None:
             return self.data
         try:
-            await aysnc_check_expiry(self.hass, self.api)
+            await aysnc_check_expiry(self.hass, self.api, self.name)
             data: PvSystemFlowData = await self.api.get_system_flow_data()
             _LOGGER.debug(f"Flow data polled: {data}")
 
@@ -211,6 +220,7 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
         self,
         hass: HomeAssistant,
         client: Fronius_Solarweb,
+        name: str,
     ) -> None:
         """Initialize."""
         self.api = client
@@ -231,7 +241,7 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
         if not is_up(self.hass) and self.data is not None:
             return self.data
         try:
-            await aysnc_check_expiry(self.hass, self.api)
+            await aysnc_check_expiry(self.hass, self.api, self.name)
             data: PvSystemAggrDataV2 = await self.api.get_system_aggr_data_v2()
             _LOGGER.debug(f"Aggregated data polled: {data}")
 
