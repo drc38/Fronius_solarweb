@@ -125,12 +125,14 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
 
             if data.get(CONF_LOGIN_PASSWORD):
                 await client.login()
-                await self.hass.async_add_executor_job(
-                    save_token, self.hass, client.jwt_data
-                )
 
             system_data = await client.get_pvsystem_meta_data()
             _LOGGER.info("Retrieved PV system data from cloud API")
+
+            if data.get(CONF_LOGIN_PASSWORD):
+                await self.hass.async_add_executor_job(
+                    save_token, self.hass, system_data.name, client.jwt_data
+                )
 
             # Return extra info that you want to store in the config entry.
             return {
