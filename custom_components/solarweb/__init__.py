@@ -111,10 +111,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     if login_password:
         token = await hass.async_add_executor_job(load_token, hass, entry.title)
-        client.jwt_data = token
-        client._jwt_headers = {"Authorization": "Bearer " + client.jwt_data.get(TOKEN)}
+        if token:
+            client.jwt_data = token
+            client._jwt_headers = {
+                "Authorization": "Bearer " + client.jwt_data.get(TOKEN)
+            }
+        else:
+            await client.login()
         try:
-            await aysnc_check_expiry(hass, client)
+            await aysnc_check_expiry(hass, client, entry.title)
         except HTTPStatusError:
             await client.login()
         await hass.async_add_executor_job(
