@@ -11,13 +11,27 @@
           "login": "Login name, not required if using custom generated key id/values",
           "password": "Login password, not required if using custom generated key id/values"
         }
+      },
+      "reconfigure": {
+        "title": "Solar Web",
+        "description": "If you need help with the configuration have a look here: https://github.com/drc38/Fronius_solarweb",
+        "data": {
+          "pvid": "PV system id",
+          "accesskeyid": "API access key id, default if using app login details",
+          "accesskeyvalue": "API access key value, default if using app login details",
+          "login": "Login name, not required if using custom generated key id/values",
+          "password": "Login password, not required if using custom generated key id/values"
+        }
       }
     },
     "error": {
       "auth": "Error setting up integration, check logs."
     },
     "abort": {
-      "single_instance_allowed": "Only a single instance is allowed."
+      "single_instance_allowed": "Only a single instance is allowed.",
+      "already_configured": "Device is already configured",
+      "reconfigure_successful": "Reconfiguration successful",
+      "already_in_progress": "A setup is already in progress for this integration"
     }
   }
 }

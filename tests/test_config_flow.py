@@ -4,10 +4,12 @@ from unittest.mock import patch
 
 import pytest
 from homeassistant import config_entries, data_entry_flow
+from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.solarweb.const import DOMAIN
 
 from .const import MOCK_CONFIG, PV_SYS_DATA
+from .const import MOCK_CONFIG_INIT
 
 
 # This fixture bypasses the actual setup of the integration
@@ -54,6 +56,47 @@ async def test_successful_config_flow(hass, bypass_get_data) -> None:
     assert result["title"] == PV_SYS_DATA["name"]
     assert result["data"] == MOCK_CONFIG
     assert result["result"]
+
+
+async def test_reconfigure_entry(hass, bypass_get_data, caplog) -> None:
+    """Test entry setup and unload."""
+    # Create a mock entry so we don't have to go through config flow
+    config_entry = MockConfigEntry(
+        domain=DOMAIN,
+        data=MOCK_CONFIG_INIT,
+        entry_id="test_reconfigure",
+        title="test_reconfigure",
+    )
+    config_entry.add_to_hass(hass)
+    # hass.config_entries._entries[config_entry.entry_id] = config_entry
+
+    # Set up the entry and assert that the values set during setup are where we expect
+    # them to be. Because we have patched the FlowDataUpdateCoordinator.async_get_data
+    # call, no code from fronius_solarweb library.
+    assert await hass.config_entries.async_setup(config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    # Initialize a config flow
+    result = await hass.config_entries.flow.async_init(
+        DOMAIN,
+        context={
+            "source": config_entries.SOURCE_RECONFIGURE,
+            "entry_id": config_entry.entry_id,
+        },
+    )
+
+    # Check that the config flow shows the user form as the first step
+    assert result["type"] == data_entry_flow.FlowResultType.FORM
+    assert result["step_id"] == "reconfigure"
+
+    # If a user were to enter form it would result in this function call
+    result = await hass.config_entries.flow.async_configure(
+        result["flow_id"], user_input=MOCK_CONFIG
+    )
+
+    # Check that the config flow is complete and a new entry is created with
+    # the input data
+    assert result["type"] == data_entry_flow.FlowResultType.ABORT
 
 
 # In this case, we want to simulate a failure during the config flow.
