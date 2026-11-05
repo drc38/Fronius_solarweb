@@ -28,7 +28,6 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
     """Config flow for solarweb."""
 
     VERSION = 1
-    CONNECTION_CLASS = config_entries.CONN_CLASS_CLOUD_POLL
 
     def __init__(self) -> None:
         """Initialize."""
@@ -67,6 +66,9 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 }
             ),
             errors=self._errors,
+            description_placeholders={
+                "docs_url": "https://github.com/drc38/Fronius_solarweb"
+            },
         )
 
     async def _show_reconfig_form(self, entry, id="reconfigure"):
@@ -90,6 +92,9 @@ class SolarWebFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 }
             ),
             errors=self._errors,
+            description_placeholders={
+                "docs_url": "https://github.com/drc38/Fronius_solarweb"
+            },
         )
 
     async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None):
