@@ -129,8 +129,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             save_token, hass, entry.title, client.jwt_data
         )
 
-    coordinatorFlow = FlowDataUpdateCoordinator(hass, client=client, name=entry.title)
-    coordinatorAggr = AggrDataUpdateCoordinator(hass, client=client, name=entry.title)
+    coordinatorFlow = FlowDataUpdateCoordinator(
+        hass, client=client, name=entry.title, config_entry=entry
+    )
+    coordinatorAggr = AggrDataUpdateCoordinator(
+        hass, client=client, name=entry.title, config_entry=entry
+    )
 
     coordinators = [coordinatorFlow, coordinatorAggr]
 
@@ -190,6 +194,7 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
         hass: HomeAssistant,
         client: Fronius_Solarweb,
         name: str,
+        config_entry: ConfigEntry,
     ) -> None:
         """Initialize."""
         self.api = client
@@ -201,6 +206,7 @@ class FlowDataUpdateCoordinator(DataUpdateCoordinator):
             name=DOMAIN,
             update_interval=SCAN_INTERVAL_FLOW,
             update_method=self.async_update_data,
+            config_entry=config_entry,
         )
 
     async def async_update_data(self):
@@ -229,6 +235,7 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
         hass: HomeAssistant,
         client: Fronius_Solarweb,
         name: str,
+        config_entry: ConfigEntry,
     ) -> None:
         """Initialize."""
         self.api = client
@@ -240,6 +247,7 @@ class AggrDataUpdateCoordinator(DataUpdateCoordinator):
             name=DOMAIN,
             update_interval=SCAN_INTERVAL_AGG,
             update_method=self.async_update_data,
+            config_entry=config_entry,
         )
 
     async def async_update_data(self):
