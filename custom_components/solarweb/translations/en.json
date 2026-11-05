@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Solar Web",
-        "description": "If you need help with the configuration have a look here: https://github.com/drc38/Fronius_solarweb",
+        "description": "If you need help with the configuration have a look here: {docs_url}",
         "data": {
           "pvid": "PV system id",
           "accesskeyid": "API access key id, default if using app login details",
@@ -14,7 +14,7 @@
       },
       "reconfigure": {
         "title": "Solar Web",
-        "description": "If you need help with the configuration have a look here: https://github.com/drc38/Fronius_solarweb",
+        "description": "If you need help with the configuration have a look here: {docs_url}",
         "data": {
           "pvid": "PV system id",
           "accesskeyid": "API access key id, default if using app login details",

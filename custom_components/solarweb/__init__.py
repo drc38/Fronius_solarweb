@@ -14,6 +14,7 @@ from fronius_solarweb import Fronius_Solarweb
 from fronius_solarweb.errors import NotAuthorizedException
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.helpers.httpx_client import get_async_client
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
@@ -42,6 +43,8 @@ SCAN_INTERVAL_FLOW = timedelta(minutes=5)
 SCAN_INTERVAL_AGG = timedelta(minutes=15)
 
 _LOGGER: logging.Logger = logging.getLogger(__package__)
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
 
 def save_token(
