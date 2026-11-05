@@ -2,16 +2,10 @@
 
 import logging
 
-import pytest
-from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers.update_coordinator import UpdateFailed
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
 from custom_components.solarweb import (
     FlowDataUpdateCoordinator,
-    async_reload_entry,
-    async_setup_entry,
-    async_unload_entry,
 )
 from custom_components.solarweb.const import (
     DOMAIN,
@@ -60,14 +54,14 @@ async def test_setup_unload_and_reload_entry(hass, bypass_get_data, caplog) -> N
     )
 
     # Reload the entry and assert that the data from above is still there
-    assert await async_reload_entry(hass, config_entry) is None
+    await hass.config_entries.async_reload(config_entry.entry_id)
     assert DOMAIN in hass.data
     assert config_entry.entry_id in hass.data[DOMAIN]
     assert isinstance(
         hass.data[DOMAIN][config_entry.entry_id][0], FlowDataUpdateCoordinator
     )
 
-    await async_unload_entry(hass, config_entry)
+    await hass.config_entries.async_unload(config_entry.entry_id)
     assert config_entry.entry_id not in hass.data[DOMAIN]
 
 
@@ -78,8 +72,5 @@ async def test_setup_entry_exception(hass, error_on_get_data) -> None:
     )
     config_entry.add_to_hass(hass)
 
-    # In this case we are testing the condition where async_setup_entry raises
-    # ConfigEntryNotReady using the `error_on_get_data` fixture which simulates
-    # an error.
-    with pytest.raises((ConfigEntryNotReady, UpdateFailed)):
-        assert await async_setup_entry(hass, config_entry)
+    # The config entry manager sets the entry to SETUP_IN_PROGRESS before setup.
+    assert not await hass.config_entries.async_setup(config_entry.entry_id)
